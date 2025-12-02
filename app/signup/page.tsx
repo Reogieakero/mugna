@@ -81,15 +81,26 @@ export default function SignupPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setStatusMessage(`**Success!** Your Mugna account has been created, **${formData.name}**! You can now log in.`); 
+        setStatusMessage(`**Success!** Your Mugna account has been created, **${formData.name}**! Redirecting to login...`); 
         setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+        
+        // --- MODIFICATION FOR REDIRECT ---
+        setTimeout(() => {
+          window.location.href = '/login'; 
+        }, 500); // Redirect after 2 seconds
+        // ---------------------------------
+        
       } else {
         setStatusMessage(`**Error:** ${data.error || 'Something went wrong during account creation.'}`);
       }
     } catch (error) {
       setStatusMessage('**Network Error:** An unexpected network issue occurred. Please try again.');
     } finally {
-      setIsSubmitting(false);
+      // Only stop showing 'Creating Account...' if the submission failed, 
+      // otherwise, the redirect will handle the page change.
+      if (!statusMessage?.startsWith('**Success!')) { 
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -172,7 +183,7 @@ export default function SignupPage() {
             </div>
 
             {/* Password Field & Validation CONTAINER */}
-            <div className={`${getStaggerClass(1200)} ${styles.passwordGroupContainer} ${styles['mb-4']}`}>
+            <div className={`${getStaggerClass(1200)} ${styles.passwordGroupContainer} ${styles.passwordGroupPassword} ${styles['mb-4']}`}>
               <label htmlFor="password" className={styles.label}>Password</label>
               <div className={styles.passwordInputWrapper}> 
                 <input
@@ -197,7 +208,7 @@ export default function SignupPage() {
               </div>
             
               {/* Password Validation Requirements (Floating) */}
-              {formData.password.length > 0 && (
+              {formData.password.length > 0 && !isPasswordValid && ( 
                   <ul className={`${styles.validationList} ${styles.validationFloat} ${getStaggerClass(1300)}`}>
                       <ValidationItem isValid={passwordValidation.isLengthValid}>
                           At least 8 characters long
@@ -218,14 +229,14 @@ export default function SignupPage() {
               )}
             </div>
 
-            {/* Confirm Password Field */}
-            <div className={`${getStaggerClass(1400)} ${styles['mb-4']}`}>
+            {/* Confirm Password Field (UPDATED CONTAINER for floating status) */}
+            <div className={`${getStaggerClass(1400)} ${styles.passwordGroupContainer} ${styles['mb-4']}`}> 
               <label htmlFor="confirmPassword" className={styles.label}>Confirm Password</label>
               <div className={styles.passwordInputWrapper}> 
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
-                  type={showConfirmPassword ? 'text' : 'password'} 
+                  type={showConfirmPassword ? 'text' : 'password'}
                   required
                   className={styles.inputField}
                   placeholder="••••••••"
@@ -239,13 +250,19 @@ export default function SignupPage() {
                   className={styles.togglePasswordButton}
                   aria-label={showConfirmPassword ? 'Hide confirmation password' : 'Show confirmation password'}
                 >
-                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />} 
                 </button>
               </div>
-              {formData.confirmPassword.length > 0 && formData.password.length > 0 && (
-                <p className={styles.matchStatus} data-match={formData.password === formData.confirmPassword}>
-                    {formData.password === formData.confirmPassword ? 'Passwords match.' : 'Passwords do not match.'}
-                </p>
+              
+              {/* Password Match Status (NOW FLOATING) */}
+              {/* MODIFIED: The message is now only displayed if the passwords do NOT match. */}
+              {formData.confirmPassword.length > 0 && 
+               formData.password.length > 0 && 
+               formData.password !== formData.confirmPassword && (
+                <div className={`${styles.validationFloat} ${styles.matchStatus}`} 
+                     data-match={false}>
+                    {'Passwords do not match.'}
+                </div>
               )}
             </div>
 
@@ -260,7 +277,7 @@ export default function SignupPage() {
             <button
               type="submit"
               className={`${styles.signupButton} ${getStaggerClass(1600)}`} 
-              disabled={isSubmitting || !isFormValid} // DISABLE if not valid
+              disabled={isSubmitting || !isFormValid}
             >
               {isSubmitting ? 'Creating Account...' : 'Sign Up'}
             </button>

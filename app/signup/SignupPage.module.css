@@ -50,6 +50,45 @@
   line-height: 1.5;
 }
 
+/* NEW: Container to enable floating validation */
+.passwordGroupContainer {
+  /* CRUCIAL FIX for validation message visibility: Establishes a higher stacking context */
+  position: relative; 
+  /* MODIFIED: Lowered the base z-index */
+  z-index: 50; 
+}
+
+/* NEW: Specific style for the first password input container to ensure its validation floats above others */
+.passwordGroupPassword {
+  /* Higher z-index to place the password field group above the confirm password group */
+  z-index: 60; 
+}
+
+
+/* NEW: Style for the floating validation list/status */
+.validationFloat {
+  position: absolute; /* Take the list out of the document flow */
+  /* MODIFIED: Lowered z-index to ensure it is stacked by its parent container z-index */
+  z-index: 40; 
+  top: 100%; /* Position it right below the password input field */
+  left: 0;
+  width: 100%; /* Make it span the width of the password group container */
+  padding: 1rem;
+  margin-top: 0.25rem; /* Small gap from the input field */
+  background-color: white; /* Give it a solid background */
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border: 1px solid #e5e5e5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .validationFloat {
+    background-color: #27272a;
+    border-color: #3f3f46;
+  }
+}
+
+
 .validationItem {
   display: flex;
   align-items: center;
@@ -74,12 +113,24 @@
   color: #f87171; /* Default X color */
 }
 
-/* NEW: Password Match Status */
+/* NEW: Password Match Status - Adjusting padding for floating version */
 .matchStatus {
-    margin-top: 0.5rem;
+    /* Resetting the default margin-top from the previous version, 
+       as validationFloat handles positioning */
+    margin-top: 0; 
     font-size: 0.85rem;
     font-weight: 500;
+    /* Adding padding to mimic validationList item spacing */
+    padding: 0.5rem 0; 
+    text-align: center; /* Center the match text */
 }
+
+/* Specific styling when matchStatus is used within validationFloat */
+.validationFloat.matchStatus {
+    padding: 1rem; /* Use the full validationFloat padding */
+    text-align: left; /* Adjust alignment if needed, or keep centered */
+}
+
 
 .matchStatus[data-match="true"] {
     color: #059669; /* Green */
@@ -132,7 +183,7 @@
 
 .leftSection {
   flex: 1 1 0%;
-  max-width: 32rem;
+  max-width: 40rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
   display: none;
@@ -162,13 +213,24 @@
 
 .signupFormMain {
   width: 100%;
-  max-width: 24rem;
+  /* MODIFIED: Use a wider max-width for better mobile/tablet fit */
+  max-width: 28rem; 
   padding: 2rem;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
   background-color: white;
   border-radius: 0.75rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+@media (min-width: 768px) {
+  .leftSection {
+    display: block;
+  }
+  /* MODIFIED: Restore to the original smaller width on desktop */
+  .signupFormMain {
+    max-width: 24rem; 
+  }
 }
 
 @media (prefers-color-scheme: dark) {
