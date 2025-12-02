@@ -1,9 +1,7 @@
-/* Added the CSS for the mb-4 class */
 .mb-4 {
   margin-bottom: 1rem;
 }
 
-/* NEW: Professional Status Message Styling */
 .statusMessage {
   padding: 0.75rem 1rem;
   margin-top: 1rem;
@@ -14,9 +12,9 @@
 }
 
 .statusMessageSuccess {
-  background-color: #d1fae5; /* Green Light */
-  color: #065f46; /* Green Dark */
-  border-color: #34d399; /* Green Border */
+  background-color: #d1fae5;
+  color: #065f46;
+  border-color: #34d399;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,9 +26,9 @@
 }
 
 .statusMessageError {
-  background-color: #fee2e2; /* Red Light */
-  color: #991b1b; /* Red Dark */
-  border-color: #fca5a5; /* Red Border */
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-color: #fca5a5;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -41,7 +39,6 @@
   }
 }
 
-/* NEW: Password Validation List Styling */
 .validationList {
   list-style: none;
   padding: 0.5rem 0 0.5rem 0;
@@ -50,32 +47,25 @@
   line-height: 1.5;
 }
 
-/* NEW: Container to enable floating validation */
 .passwordGroupContainer {
-  /* CRUCIAL FIX for validation message visibility: Establishes a higher stacking context */
   position: relative; 
-  /* MODIFIED: Lowered the base z-index */
   z-index: 50; 
 }
 
-/* NEW: Specific style for the first password input container to ensure its validation floats above others */
 .passwordGroupPassword {
-  /* Higher z-index to place the password field group above the confirm password group */
   z-index: 60; 
 }
 
 
-/* NEW: Style for the floating validation list/status */
 .validationFloat {
-  position: absolute; /* Take the list out of the document flow */
-  /* MODIFIED: Lowered z-index to ensure it is stacked by its parent container z-index */
+  position: absolute; 
   z-index: 40; 
-  top: 100%; /* Position it right below the password input field */
+  top: 100%; 
   left: 0;
-  width: 100%; /* Make it span the width of the password group container */
+  width: 100%; 
   padding: 1rem;
-  margin-top: 0.25rem; /* Small gap from the input field */
-  background-color: white; /* Give it a solid background */
+  margin-top: 0.25rem; 
+  background-color: white; 
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   border: 1px solid #e5e5e5;
@@ -92,61 +82,54 @@
 .validationItem {
   display: flex;
   align-items: center;
-  color: #71717a; /* Default gray/pending */
+  color: #71717a;
 }
 
 .validationItem[data-valid="true"] {
-  color: #059669; /* Green for success */
+  color: #059669;
 }
 
 .validationItem[data-valid="false"] {
-  color: #dc2626; /* Red for failure */
+  color: #dc2626;
 }
 
 .checkIcon {
   margin-right: 0.5rem;
-  color: #10b981; /* Default Check color */
+  color: #10b981;
 }
 
 .xIcon {
   margin-right: 0.5rem;
-  color: #f87171; /* Default X color */
+  color: #f87171;
 }
 
-/* NEW: Password Match Status - Adjusting padding for floating version */
 .matchStatus {
-    /* Resetting the default margin-top from the previous version, 
-       as validationFloat handles positioning */
     margin-top: 0; 
     font-size: 0.85rem;
     font-weight: 500;
-    /* Adding padding to mimic validationList item spacing */
     padding: 0.5rem 0; 
-    text-align: center; /* Center the match text */
+    text-align: center;
 }
 
-/* Specific styling when matchStatus is used within validationFloat */
 .validationFloat.matchStatus {
-    padding: 1rem; /* Use the full validationFloat padding */
-    text-align: left; /* Adjust alignment if needed, or keep centered */
+    padding: 1rem;
+    text-align: left;
 }
 
 
 .matchStatus[data-match="true"] {
-    color: #059669; /* Green */
+    color: #059669;
 }
 
 .matchStatus[data-match="false"] {
-    color: #dc2626; /* Red */
+    color: #dc2626;
 }
 
-/* Existing CSS below */
 .staggerIn {
   animation: fadeIn 0.8s forwards;
   opacity: 0;
   transform: translateY(20px);
 }
-/* ... rest of existing CSS */
 @keyframes fadeIn {
   to {
     opacity: 1;
@@ -213,7 +196,6 @@
 
 .signupFormMain {
   width: 100%;
-  /* MODIFIED: Use a wider max-width for better mobile/tablet fit */
   max-width: 28rem; 
   padding: 2rem;
   margin-top: 1.5rem;
@@ -227,7 +209,6 @@
   .leftSection {
     display: block;
   }
-  /* MODIFIED: Restore to the original smaller width on desktop */
   .signupFormMain {
     max-width: 24rem; 
   }
@@ -288,17 +269,15 @@
   }
 }
 
-/* NEW: Wrapper for the password input and icon */
 .passwordInputWrapper {
   position: relative;
   display: flex;
-  align-items: center; /* Vertically center the input and icon */
+  align-items: center; 
 }
 
 .inputField {
   width: 100%;
   padding: 0.5rem 1rem;
-  /* ADDED padding-right to make room for the eye icon */
   padding-right: 3rem; 
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 0.5rem;
@@ -321,15 +300,14 @@
   }
 }
 
-/* NEW: Style for the eye icon button */
 .togglePasswordButton {
   position: absolute;
-  right: 0.75rem; /* Position from the right edge of the wrapper */
+  right: 0.75rem; 
   padding: 0;
   border: none;
   background: none;
   cursor: pointer;
-  color: #71717a; /* Icon color */
+  color: #71717a;
   display: flex;
   align-items: center;
   height: 100%;

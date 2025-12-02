@@ -1,8 +1,8 @@
 export const metadata = {
-  title: 'Mugna - Create Account',
+  title: 'Mugna - Verify Account',
 }
 
-export default function SignupLayout({
+export default function VerifyLayout({
   children,
 }: {
   children: React.ReactNode

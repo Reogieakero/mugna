@@ -7,7 +7,6 @@ import { Eye, EyeOff, CheckCircle, XCircle } from 'lucide-react';
 const getStaggerClass = (delay: number) => 
   `${styles.staggerIn} [animation-delay:${delay}ms]`;
 
-// Function to validate password complexity
 const validatePassword = (password: string) => ({
   isLengthValid: password.length >= 8,
   hasUppercase: /[A-Z]/.test(password),
@@ -29,15 +28,12 @@ export default function SignupPage() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Memoize password validation results for dynamic display
   const passwordValidation = useMemo(() => 
     validatePassword(formData.password)
   , [formData.password]);
   
-  // Determine if the password meets ALL requirements
   const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
-  // Determine if the form is generally valid for submission
   const isFormValid = isPasswordValid && 
                       formData.name.trim() !== '' &&
                       formData.email.trim() !== '' &&
@@ -46,7 +42,6 @@ export default function SignupPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    // Clear status message on input change
     setStatusMessage(null); 
   };
 
@@ -55,14 +50,12 @@ export default function SignupPage() {
     setStatusMessage(null); 
     setIsSubmitting(true);
     
-    // Client-side guard for complex password validation
     if (!isPasswordValid) {
         setStatusMessage('**Error:** Your password does not meet all the required security criteria.');
         setIsSubmitting(false);
         return;
     }
 
-    // Client-side guard for password match
     if (formData.password !== formData.confirmPassword) {
         setStatusMessage('**Error:** Passwords do not match.');
         setIsSubmitting(false);
@@ -81,14 +74,14 @@ export default function SignupPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setStatusMessage(`**Success!** Your Mugna account has been created, **${formData.name}**! Redirecting to login...`); 
+        const { redirectTo } = data;
+        
+        setStatusMessage(`**Success!** Account created! Check your email for a verification code. Redirecting...`); 
         setFormData({ name: '', email: '', password: '', confirmPassword: '' });
         
-        // --- MODIFICATION FOR REDIRECT ---
         setTimeout(() => {
-          window.location.href = '/login'; 
-        }, 500); // Redirect after 2 seconds
-        // ---------------------------------
+          window.location.href = redirectTo; 
+        }, 1000);
         
       } else {
         setStatusMessage(`**Error:** ${data.error || 'Something went wrong during account creation.'}`);
@@ -96,8 +89,6 @@ export default function SignupPage() {
     } catch (error) {
       setStatusMessage('**Network Error:** An unexpected network issue occurred. Please try again.');
     } finally {
-      // Only stop showing 'Creating Account...' if the submission failed, 
-      // otherwise, the redirect will handle the page change.
       if (!statusMessage?.startsWith('**Success!')) { 
         setIsSubmitting(false);
       }
@@ -152,7 +143,6 @@ export default function SignupPage() {
 
           <form className={styles.formWrapper} onSubmit={handleSubmit}>
             
-            {/* Full Name Field */}
             <div className={`${getStaggerClass(800)} ${styles['mb-4']}`}> 
               <label htmlFor="name" className={styles.label}>Full Name</label>
               <input
@@ -167,7 +157,6 @@ export default function SignupPage() {
               />
             </div>
 
-            {/* Email Field */}
             <div className={`${getStaggerClass(1000)} ${styles['mb-4']}`}> 
               <label htmlFor="email" className={styles.label}>Email Address</label>
               <input
@@ -182,7 +171,6 @@ export default function SignupPage() {
               />
             </div>
 
-            {/* Password Field & Validation CONTAINER */}
             <div className={`${getStaggerClass(1200)} ${styles.passwordGroupContainer} ${styles.passwordGroupPassword} ${styles['mb-4']}`}>
               <label htmlFor="password" className={styles.label}>Password</label>
               <div className={styles.passwordInputWrapper}> 
@@ -207,7 +195,6 @@ export default function SignupPage() {
                 </button>
               </div>
             
-              {/* Password Validation Requirements (Floating) */}
               {formData.password.length > 0 && !isPasswordValid && ( 
                   <ul className={`${styles.validationList} ${styles.validationFloat} ${getStaggerClass(1300)}`}>
                       <ValidationItem isValid={passwordValidation.isLengthValid}>
@@ -229,7 +216,6 @@ export default function SignupPage() {
               )}
             </div>
 
-            {/* Confirm Password Field (UPDATED CONTAINER for floating status) */}
             <div className={`${getStaggerClass(1400)} ${styles.passwordGroupContainer} ${styles['mb-4']}`}> 
               <label htmlFor="confirmPassword" className={styles.label}>Confirm Password</label>
               <div className={styles.passwordInputWrapper}> 
@@ -254,8 +240,6 @@ export default function SignupPage() {
                 </button>
               </div>
               
-              {/* Password Match Status (NOW FLOATING) */}
-              {/* MODIFIED: The message is now only displayed if the passwords do NOT match. */}
               {formData.confirmPassword.length > 0 && 
                formData.password.length > 0 && 
                formData.password !== formData.confirmPassword && (
@@ -266,7 +250,6 @@ export default function SignupPage() {
               )}
             </div>
 
-            {/* Display Status Message */}
             {statusMessage && (
               <p 
                 className={`${styles.statusMessage} ${statusMessage.startsWith('**Success!') ? styles.statusMessageSuccess : styles.statusMessageError}`}
@@ -282,7 +265,6 @@ export default function SignupPage() {
               {isSubmitting ? 'Creating Account...' : 'Sign Up'}
             </button>
 
-            {/* ... rest of the form */}
             <div className={`${styles.separatorWrapper} ${getStaggerClass(1800)}`}> 
               <div className={styles.separatorLine}>
                 <div className={styles.separatorBar}></div>

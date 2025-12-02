@@ -20,50 +20,43 @@
 }
 @import "tailwindcss";
 
-/* ... (Theme and body styles remain the same) ... */
 
 body {
-  overflow-x: hidden; /* Keeps the no-horizontal-scroll fix */
+  overflow-x: hidden; 
   
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* --- Slide-In Animations (Kept for reference, but won't be used in page.tsx) --- */
 @keyframes slideInFromRight {
   0% { transform: translateX(100%); opacity: 0; }
   100% { transform: translateX(0); opacity: 1; }
 }
-/* ... (slideInFromLeft keyframes) ... */
 .slide-in-right { animation: slideInFromRight 0.7s ease-out forwards; }
 .slide-in-left { animation: slideInFromLeft 0.7s ease-out forwards; }
 
 
-/* --- Fade-Up/Stagger Animation (This is what we will use now) --- */
 
 @keyframes fadeInSlideUp {
   0% {
     opacity: 0;
-    transform: translateY(10px); /* Starts slightly below its final position */
+    transform: translateY(10px); 
   }
   100% {
     opacity: 1;
-    transform: translateY(0); /* Ends in its final position */
+    transform: translateY(0);
   }
 }
 
 .stagger-in {
-  /* Hide the element before the animation runs */
   opacity: 0;
-  /* Apply the animation */
   animation-name: fadeInSlideUp;
   animation-duration: 0.4s;
   animation-timing-function: ease-out;
   animation-fill-mode: forwards;
 }
 
-/* Delay Utilities for Staggering (Used to sequence the appearance) */
 .delay-200 { animation-delay: 0.2s; }
 .delay-400 { animation-delay: 0.4s; }
 .delay-600 { animation-delay: 0.6s; }
