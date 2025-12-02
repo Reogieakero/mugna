@@ -68,6 +68,7 @@ export default function AdminProductsPage() {
 
   return (
     <AdminLayout>
+        
       <div style={headerContainerStyle}>
         <h1 style={headerTitleStyle}>Product Management</h1>
         <button onClick={handleAddProduct} style={addButtonStyles}>
