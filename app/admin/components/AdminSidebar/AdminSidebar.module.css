@@ -1,0 +1,93 @@
+:root {
+  --primary-color: #3b82f6; 
+}
+
+.sidebar {
+  width: 280px;
+  background-color: #ffffff; 
+  color: #374151; 
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1); 
+  font-family: 'Poppins', sans-serif; 
+}
+
+.logo {
+  font-size: 1.65rem;
+  font-weight: 900;
+  margin-bottom: 2.5rem;
+  text-align: left;
+  color: #1f2937;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: #374151;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  background-color: transparent;
+}
+
+.navItem:hover {
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+.navItem.active {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+.navItem.active:hover {
+  background-color: #2563eb; 
+}
+
+.navItem.active svg {
+  color: #ffffff;
+}
+
+.navItem svg {
+  color: #6b7280; 
+  transition: color 0.2s ease;
+}
+
+.navItem:hover svg {
+  color: #1f2937;
+}
+
+
+.logoutBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #ef4444; 
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.logoutBtn:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
