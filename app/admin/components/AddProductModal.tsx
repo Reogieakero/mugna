@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import {
-  X, Save, Upload, Package, DollarSign, Layers, Tag, AlignLeft, Image as ImageIcon, ChevronDown
+  X, Save, Upload, Package, Layers, Tag, AlignLeft, Image as ImageIcon, ChevronDown
 } from 'lucide-react';
 import { Product } from '@/lib/db/product.model';
 
@@ -18,7 +18,7 @@ const LEATHER_CATEGORIES = [
   'Other',
 ];
 
-// --- Style Configuration (UPDATED for Black & White Palette) ---
+// --- Style Configuration (Black & White Palette) ---
 const primaryColor = '#000000';    // Primary action color (similar to var(--foreground))
 const secondaryColor = '#475569';  // Secondary text color (from login label)
 const dangerColor = '#ef4444';     // Keeping standard red for errors/danger
@@ -192,7 +192,8 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
                 Cancel
               </button>
               <button type="submit" disabled={isSubmitting} style={submitButtonStyle}>
-                {isSubmitting ? 'Adding...' : 'Add Product'}
+                <Save size={16} style={{ marginRight: '0.5rem' }} />
+                {isSubmitting ? 'Saving...' : 'Save Product'}
               </button>
 
               <button onClick={onClose} style={closeButtonStyle} title="Close" disabled={isSubmitting}>
@@ -243,7 +244,8 @@ export default function AddProductModal({ isOpen, onClose, onProductAdded }: Add
             <div style={formRowStyle}>
               <div style={formRowItemStyle}>
                 <label htmlFor="price" style={labelStyle}>
-                  <DollarSign size={14} style={{ marginRight: '0.4rem' }}/>
+                  {/* UPDATED: Changed DollarSign icon to Peso sign (₱) */}
+                  <span style={{ marginRight: '0.4rem', fontWeight: 'bold', fontSize: '1rem', color: darkText }}>₱</span>
                   Price <span style={requiredStarStyle}>*</span>
                 </label>
                 <input
