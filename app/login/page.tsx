@@ -1,17 +1,21 @@
-// app/login/page.tsx
+"use client"; // Retain 'use client' for useState
 
-import Image from "next/image";
+import { useState } from 'react'; 
 import styles from "./LoginPage.module.css";
+import { Eye, EyeOff } from 'lucide-react'; 
 
-export const metadata = {
-  title: 'Mugna - Login Account',
-}
 
 const getStaggerClass = (delay: number) => 
   `${styles.staggerIn} [animation-delay:${delay}ms]`;
 
 
 export default function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false); 
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div
       className={styles.mainContainer}
@@ -30,11 +34,11 @@ export default function LoginPage() {
           className={`${styles.leftSection} ${getStaggerClass(200)}`}
         >
           <h1 className={styles.heading1}> 
-            Mugna Collection
+            Welcome Back!
           </h1>
           <p className={styles.marketingText}> 
-            Your gateway to discovering and curating the finest digital and physical crafts. 
-            Sign in to manage your inventory, explore new collections, and connect with artisans worldwide.
+            Sign in to Mugna to access your personalized dashboard, manage your inventory, 
+            and keep up with the latest from the global artisan community.
           </p>
         </div>
 
@@ -47,18 +51,19 @@ export default function LoginPage() {
               Mugna
             </h1>
             <h1 className={styles.headerSubtitle}>
-              Sign in to your account
+              Sign In to Your Account
             </h1>
           </div>
 
           <form className={styles.formWrapper}>
             
-            <div className={getStaggerClass(800)}>
+            {/* Email Field */}
+            <div className={`${getStaggerClass(800)} ${styles.mb4}`}> 
               <label
                 htmlFor="email"
                 className={styles.label}
               >
-                Email address
+                Email Address
               </label>
               <input
                 id="email"
@@ -70,31 +75,33 @@ export default function LoginPage() {
               />
             </div>
 
-            
-            <div className={getStaggerClass(1000)}>
+            {/* Password Field */}
+            <div className={`${getStaggerClass(1000)} ${styles.mb4}`}>
               <label
                 htmlFor="password"
                 className={styles.label}
               >
                 Password
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className={styles.inputField}
-                placeholder="••••••••"
-              />
               
-              
-              <div className={styles.forgotPasswordLinkContainer}> 
-                <a
-                  href="#"
-                  className={styles.forgotPasswordLink}
+              <div className={styles.passwordInputWrapper}> 
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'} 
+                  required
+                  className={styles.inputField}
+                  placeholder="••••••••"
+                />
+                
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className={styles.togglePasswordButton}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  Forgot your password?
-                </a>
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
             </div>
 
@@ -105,24 +112,23 @@ export default function LoginPage() {
               Log In
             </button>
 
-            
+            {/* Separator and Sign Up Link */}
             <div className={`${styles.separatorWrapper} ${getStaggerClass(1400)}`}> 
               <div className={styles.separatorLine}>
                 <div className={styles.separatorBar}></div>
               </div>
               <div className={styles.separatorTextContainer}>
                 <span className={styles.separatorText}>
-                  New to Mugna?
+                  Don&apos;t have an account?
                 </span>
               </div>
             </div>
 
-            
             <a
-              href="/signup" 
-              className={`${styles.createAccountButton} ${getStaggerClass(1600)}`} 
+              href="/signup"
+              className={`${styles.signupLink} ${getStaggerClass(1600)}`} 
             >
-              Create Account
+              Sign Up
             </a>
           </form>
         </main>

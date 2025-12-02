@@ -1,3 +1,10 @@
+/* --- Utility Class --- */
+/* Corrected to use .mb4 for module CSS import consistency */
+.mb4 {
+  margin-bottom: 1rem;
+}
+
+/* --- Animation Classes --- */
 .staggerIn {
   animation: fadeIn 0.8s forwards;
   opacity: 0;
@@ -11,7 +18,7 @@
   }
 }
 
-
+/* --- Layout and Background --- */
 .mainContainer {
   display: flex;
   min-height: 100vh;
@@ -32,17 +39,19 @@
   z-index: 10;
   display: flex;
   width: 100%;
-  max-width: 72rem;
+  max-width: 75rem;
   align-items: center;
   justify-content: space-between;
   gap: 4rem;
   padding: 2rem;
 }
 
+/* --- Left Marketing Section --- */
 .leftSection {
   flex: 1 1 0%;
-  max-width: 40rem;
-  space-y: 1rem;
+  max-width: 32rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   display: none;
   color: white;
 }
@@ -68,16 +77,19 @@
   filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
+/* --- Login Form Container --- */
 .loginFormMain {
   width: 100%;
   max-width: 24rem;
   padding: 2rem;
-  space-y: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
   background-color: white;
   border-radius: 0.75rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
+/* Dark Mode Form/Overlay */
 @media (prefers-color-scheme: dark) {
   .backgroundOverlay {
     background-color: rgba(0, 0, 0, 0.75);
@@ -87,7 +99,7 @@
   }
 }
 
-
+/* --- Header/Title --- */
 .headerContainer {
   display: flex;
   flex-direction: column;
@@ -114,8 +126,10 @@
   }
 }
 
+/* --- Form Elements --- */
 .formWrapper {
-  space-y: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .label {
@@ -132,9 +146,17 @@
   }
 }
 
+/* NEW: Wrapper for the password input and icon */
+.passwordInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center; /* Vertically center the input and icon */
+}
+
 .inputField {
   width: 100%;
   padding: 0.5rem 1rem;
+  padding-right: 3rem; /* Make room for the eye icon */
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 0.5rem;
   background-color: #f4f4f5;
@@ -156,27 +178,35 @@
   }
 }
 
-.forgotPasswordLinkContainer {
-  text-align: right;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
+/* NEW: Style for the eye icon button */
+.togglePasswordButton {
+  position: absolute;
+  right: 0.75rem; /* Position from the right edge of the wrapper */
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #71717a; /* Icon color */
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
-.forgotPasswordLink {
-  font-weight: 500;
-  color: #52525b;
-}
-
-.forgotPasswordLink:hover {
-  text-decoration: underline;
+.togglePasswordButton:hover {
+  color: #475569;
 }
 
 @media (prefers-color-scheme: dark) {
-  .forgotPasswordLink {
+  .togglePasswordButton {
     color: #a1a1aa;
+  }
+  .togglePasswordButton:hover {
+    color: #d4d4d8;
   }
 }
 
+
+/* --- Login Button (Submit) --- */
 .loginButton {
   display: flex;
   height: 3rem;
@@ -202,6 +232,7 @@
   }
 }
 
+/* --- Separator and Link --- */
 .separatorWrapper {
   position: relative;
   padding-top: 1rem;
@@ -247,7 +278,8 @@
   }
 }
 
-.createAccountButton {
+/* --- Sign Up Link (Secondary Button) --- */
+.signupLink {
   display: flex;
   height: 3rem;
   width: 100%;
@@ -261,12 +293,12 @@
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
 }
 
-.createAccountButton:hover {
+.signupLink:hover {
   background-color: #f4f4f5;
 }
 
 @media (prefers-color-scheme: dark) {
-  .createAccountButton:hover {
+  .signupLink:hover {
     background-color: #27272a;
   }
 }

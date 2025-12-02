@@ -1,9 +1,101 @@
+/* Added the CSS for the mb-4 class */
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+/* NEW: Professional Status Message Styling */
+.statusMessage {
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.statusMessageSuccess {
+  background-color: #d1fae5; /* Green Light */
+  color: #065f46; /* Green Dark */
+  border-color: #34d399; /* Green Border */
+}
+
+@media (prefers-color-scheme: dark) {
+  .statusMessageSuccess {
+    background-color: #064e3b;
+    color: #a7f3d0;
+    border-color: #10b981;
+  }
+}
+
+.statusMessageError {
+  background-color: #fee2e2; /* Red Light */
+  color: #991b1b; /* Red Dark */
+  border-color: #fca5a5; /* Red Border */
+}
+
+@media (prefers-color-scheme: dark) {
+  .statusMessageError {
+    background-color: #450a0a;
+    color: #fecaca;
+    border-color: #ef4444;
+  }
+}
+
+/* NEW: Password Validation List Styling */
+.validationList {
+  list-style: none;
+  padding: 0.5rem 0 0.5rem 0;
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.validationItem {
+  display: flex;
+  align-items: center;
+  color: #71717a; /* Default gray/pending */
+}
+
+.validationItem[data-valid="true"] {
+  color: #059669; /* Green for success */
+}
+
+.validationItem[data-valid="false"] {
+  color: #dc2626; /* Red for failure */
+}
+
+.checkIcon {
+  margin-right: 0.5rem;
+  color: #10b981; /* Default Check color */
+}
+
+.xIcon {
+  margin-right: 0.5rem;
+  color: #f87171; /* Default X color */
+}
+
+/* NEW: Password Match Status */
+.matchStatus {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.matchStatus[data-match="true"] {
+    color: #059669; /* Green */
+}
+
+.matchStatus[data-match="false"] {
+    color: #dc2626; /* Red */
+}
+
+/* Existing CSS below */
 .staggerIn {
   animation: fadeIn 0.8s forwards;
   opacity: 0;
   transform: translateY(20px);
 }
-
+/* ... rest of existing CSS */
 @keyframes fadeIn {
   to {
     opacity: 1;
@@ -134,9 +226,18 @@
   }
 }
 
+/* NEW: Wrapper for the password input and icon */
+.passwordInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center; /* Vertically center the input and icon */
+}
+
 .inputField {
   width: 100%;
   padding: 0.5rem 1rem;
+  /* ADDED padding-right to make room for the eye icon */
+  padding-right: 3rem; 
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 0.5rem;
   background-color: #f4f4f5;
@@ -157,6 +258,34 @@
     color: #fafafa;
   }
 }
+
+/* NEW: Style for the eye icon button */
+.togglePasswordButton {
+  position: absolute;
+  right: 0.75rem; /* Position from the right edge of the wrapper */
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #71717a; /* Icon color */
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.togglePasswordButton:hover {
+  color: #475569;
+}
+
+@media (prefers-color-scheme: dark) {
+  .togglePasswordButton {
+    color: #a1a1aa;
+  }
+  .togglePasswordButton:hover {
+    color: #d4d4d8;
+  }
+}
+
 
 .signupButton {
   display: flex;
