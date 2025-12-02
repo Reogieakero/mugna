@@ -1,4 +1,3 @@
-
 import nodemailer from 'nodemailer';
 import { generate } from 'rand-token';
 import { saveVerificationCode } from '@/lib/db/verification.model';

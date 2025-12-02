@@ -1,4 +1,4 @@
-"use client"; // Retain 'use client' for useState
+"use client"; 
 
 import { useState } from 'react'; 
 import styles from "./LoginPage.module.css";
@@ -57,7 +57,6 @@ export default function LoginPage() {
 
           <form className={styles.formWrapper}>
             
-            {/* Email Field */}
             <div className={`${getStaggerClass(800)} ${styles.mb4}`}> 
               <label
                 htmlFor="email"
@@ -75,7 +74,6 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* Password Field */}
             <div className={`${getStaggerClass(1000)} ${styles.mb4}`}>
               <label
                 htmlFor="password"
@@ -112,7 +110,6 @@ export default function LoginPage() {
               Log In
             </button>
 
-            {/* Separator and Sign Up Link */}
             <div className={`${styles.separatorWrapper} ${getStaggerClass(1400)}`}> 
               <div className={styles.separatorLine}>
                 <div className={styles.separatorBar}></div>
