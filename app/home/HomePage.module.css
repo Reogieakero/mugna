@@ -1,0 +1,340 @@
+/* =================================== */
+/* 0. GLOBAL/UTILITY STYLES */
+/* =================================== */
+
+:root {
+  /* Define some variables for easier color management */
+  --primary-color: #a0c3ff; /* Light Blue/Accent */
+  --secondary-color: #ffffff; /* White */
+  --dark-background: #000000;
+  --text-color: #f0f0f0;
+}
+
+.mainContainer {
+  /* Full viewport height for the home section */
+  min-height: 100vh; 
+  /* Ensures background settings in JSX work */
+  position: relative;
+}
+
+.backgroundOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Dark overlay for better text readability over the image */
+  background-color: rgba(0, 0, 0, 0.65); 
+  z-index: 5;
+}
+
+.contentWrapper {
+  /* This margin ensures the content doesn't get hidden behind the fixed header */
+  padding-top: 5rem; 
+  z-index: 10;
+  position: relative;
+}
+
+/* =================================== */
+/* 1. HEADER STYLES (Provided Previously) */
+/* =================================== */
+
+.mugnaHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 3rem;
+  background-color: rgba(0, 0, 0, 0.7); 
+  backdrop-filter: blur(5px); 
+  color: var(--secondary-color);
+  z-index: 2000; 
+}
+
+.logo a {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary-color); 
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.logo a:hover {
+  color: var(--secondary-color);
+}
+
+.mainNav ul {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.mainNav li {
+  margin: 0 1.5rem;
+}
+
+.mainNav a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  transition: color 0.2s;
+}
+
+.mainNav a:hover {
+  color: var(--primary-color);
+}
+
+.userProfile {
+  position: relative;
+}
+
+.avatarContainer {
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  background-color: #555555;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.avatarContainer:hover {
+  background-color: #8096c4;
+}
+
+.userDropdownMenu {
+  display: none; 
+  position: absolute;
+  top: 100%; 
+  right: 0; 
+  margin-top: 10px;
+  min-width: 150px;
+  background-color: #2c2c2c;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  padding: 10px 0;
+  z-index: 3000;
+}
+
+.userDropdownMenu a,
+.userDropdownMenu button {
+  display: flex; 
+  align-items: center;
+  width: 100%;
+  padding: 8px 15px;
+  text-align: left;
+  text-decoration: none;
+  color: var(--secondary-color);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.userDropdownMenu a:hover,
+.userDropdownMenu button:hover {
+  background-color: #444444;
+  color: var(--primary-color);
+}
+
+.userDropdownMenu hr {
+  border: none;
+  border-top: 1px solid #444444;
+  margin: 5px 0;
+}
+
+
+/* =================================== */
+/* 2. HERO SECTION */
+/* =================================== */
+
+.heroSection {
+  min-height: calc(100vh - 5rem); /* Full height minus header */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.heroContent {
+  max-width: 900px;
+}
+
+.heroTitle {
+  font-size: clamp(2.5rem, 6vw, 4.5rem); /* Responsive font size */
+  color: var(--secondary-color);
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+
+.heroSubtitle {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  color: var(--text-color);
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+.heroActions {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+/* --- Buttons --- */
+.primaryButton,
+.secondaryButton {
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.primaryButton {
+  background-color: var(--primary-color);
+  color: var(--dark-background);
+}
+
+.primaryButton:hover {
+  background-color: #8096c4;
+  box-shadow: 0 0 15px rgba(160, 195, 255, 0.5);
+}
+
+.secondaryButton {
+  background-color: transparent;
+  color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.secondaryButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* =================================== */
+/* 3. FEATURE GRID SECTION */
+/* =================================== */
+
+.featureSection {
+  padding: 4rem 3rem;
+  background-color: var(--dark-background);
+  color: var(--text-color);
+}
+
+.sectionHeading {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: var(--primary-color);
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.featureCard {
+  background-color: #111111;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(160, 195, 255, 0.15);
+}
+
+.featureIcon {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--secondary-color);
+}
+
+.cardText {
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+
+/* =================================== */
+/* 4. CTA SECTION */
+/* =================================== */
+
+.ctaSection {
+  padding: 6rem 3rem;
+  background-color: #1a1a1a;
+  text-align: center;
+}
+
+.ctaTitle {
+  font-size: 2rem;
+  color: var(--secondary-color);
+  margin-bottom: 2rem;
+}
+
+
+/* =================================== */
+/* 5. FOOTER */
+/* =================================== */
+
+.footer {
+  padding: 1.5rem 3rem;
+  background-color: var(--dark-background);
+  color: #777777;
+  text-align: center;
+  border-top: 1px solid #1a1a1a;
+}
+
+.footer a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* =================================== */
+/* 6. MEDIA QUERIES (For Responsiveness) */
+/* =================================== */
+
+@media (max-width: 768px) {
+  .mugnaHeader {
+    padding: 1rem 1.5rem;
+  }
+
+  .mainNav {
+    display: none; /* Hide main links on small screens (can be put in a hamburger menu) */
+  }
+
+  .heroSection {
+    padding: 6rem 1rem 4rem;
+  }
+
+  .heroActions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

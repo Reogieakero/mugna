@@ -1,15 +1,49 @@
 // app/admin/components/ProductDetailModal.tsx
 import React from 'react';
 import { Product } from "@/lib/db/product.model";
-import { X, ShoppingBag, Edit } from "lucide-react";
+import { X, ShoppingBag, Edit, Award, Percent } from "lucide-react";
 import Image from "next/image";
 
 interface ProductDetailModalProps {
-  product: Product;
-  isOpen: boolean;
-  onClose: () => void;
-  onEdit: (id: number) => void;
+    product: Product;
+    isOpen: boolean;
+    onClose: () => void;
+    onEdit: (id: number) => void;
 }
+
+// ⭐ NEW STYLE HELPER: Maps promotion type to color scheme (Copied from ProductCard)
+const getPromotionTagStyles = (type: string) => {
+    switch (type) {
+        case 'Flash Deals':
+            return { backgroundColor: '#ef4444', color: '#ffffff' }; // Red
+        case 'Top Sellers':
+            return { backgroundColor: '#f59e0b', color: '#1f2937' }; // Amber/Orange
+        case 'Featured':
+            return { backgroundColor: '#10b981', color: '#ffffff' }; // Green
+        case 'New Arrival':
+            return { backgroundColor: '#3b82f6', color: '#ffffff' }; // Blue
+        case 'Clearance':
+            return { backgroundColor: '#6b7280', color: '#ffffff' }; // Gray
+        default:
+            return { backgroundColor: 'transparent', color: 'transparent' };
+    }
+}
+
+// ⭐ NEW STYLE: For the promotion tag (Adapted from ProductCard for modal)
+const promotionTagStyle = (type: string): React.CSSProperties => ({
+    position: 'absolute',
+    top: '1rem', // Slightly larger margin for the modal
+    right: '1rem',
+    padding: '0.4rem 0.8rem',
+    borderRadius: '0.5rem',
+    fontSize: '0.875rem', // Slightly larger font size for the modal
+    fontWeight: '700',
+    zIndex: 10,
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    ...getPromotionTagStyles(type),
+});
 
 export default function ProductDetailModal({ product, isOpen, onClose, onEdit }: ProductDetailModalProps) {
     if (!isOpen) return null;
@@ -58,20 +92,46 @@ export default function ProductDetailModal({ product, isOpen, onClose, onEdit }:
                     {/* Image Section */}
                     <div style={modalImageWrapperStyle}>
                         {renderProductImage({ borderRadius: '0.5rem' }, 500)}
+                        
+                        {/* ⭐ NEW: PROMOTION TAG - Top Right Corner ⭐ */}
+                        {product.promotionType && product.promotionType !== 'None' && (
+                            <div style={promotionTagStyle(product.promotionType)}>
+                                {product.promotionType}
+                                {/* Conditional discount display for Flash Deals */}
+                                {product.promotionType === 'Flash Deals' && product.discount > 0 && 
+                                    <span style={{ marginLeft: '0.5rem', fontWeight: 'bold' }}>
+                                        (-{product.discount}%)
+                                    </span>
+                                }
+                            </div>
+                        )}
+                        {/* ⭐ END NEW PROMOTION TAG ⭐ */}
+
                     </div>
 
-                    <p style={{ 
-                        fontSize: '0.875rem', 
-                        fontWeight: '500', 
-                        color: '#6b7280', 
-                        marginBottom: '1rem',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.05em'
-                    }}>
-                        Category: {product.category || 'N/A'}
-                    </p>
+                    {/* Product Attributes Row */}
+                    <div style={attributesRowStyle}>
+                        <p style={attributeItemStyle}> 
+                            <span style={attributeLabelStyle}>Category:</span> 
+                            <span style={attributeValueStyle}>{product.category || 'N/A'}</span>
+                        </p>
+                        
+                        {/* ⭐ NEW: Promotion Attribute Display ⭐ */}
+                        <p style={attributeItemStyle}>
+                            <span style={attributeLabelStyle}><Award size={14} style={{marginRight: '0.3rem'}} /> Promotion:</span> 
+                            <span style={attributeValueStyle}>{product.promotionType || 'None'}</span>
+                        </p>
+                        
+                        {/* ⭐ NEW: Discount Attribute Display (Conditional) ⭐ */}
+                        {product.promotionType === 'Flash Deals' && product.discount > 0 && (
+                            <p style={attributeItemStyle}>
+                                <span style={attributeLabelStyle}><Percent size={14} style={{marginRight: '0.3rem'}} /> Discount:</span> 
+                                <span style={{ ...attributeValueStyle, color: '#ef4444' }}>{product.discount}% OFF</span>
+                            </p>
+                        )}
+                    </div>
                     
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1f2937', marginBottom: '0.5rem' }}>
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1f2937', marginBottom: '0.5rem', borderTop: '1px dashed #e5e7eb', paddingTop: '1rem' }}>
                         Full Description
                     </h3>
 
@@ -86,7 +146,7 @@ export default function ProductDetailModal({ product, isOpen, onClose, onEdit }:
                     <div style={detailItemStyle}>
                         <span style={detailLabelStyle}>Current Price:</span>
                         <span style={{ fontSize: '1.25rem', fontWeight: '700', color: '#10b981' }}>
-                            ${product.price.toFixed(2)}
+                            ₱{product.price.toFixed(2)}
                         </span>
                     </div>
                     <div style={detailItemStyle}>
@@ -224,6 +284,34 @@ const modalEditIconStyle: React.CSSProperties = {
     justifyContent: 'center',
     marginLeft: 'auto',
     transition: 'background-color 0.2s',
-    // Hover effect simulation (best handled with real CSS, but defined inline here):
     // '&:hover': { backgroundColor: '#e0f2fe' } 
+};
+
+// ⭐ NEW: Style for product attributes row
+const attributesRowStyle: React.CSSProperties = {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '1.5rem',
+    marginBottom: '1.5rem',
+};
+
+const attributeItemStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+};
+
+const attributeLabelStyle: React.CSSProperties = {
+    fontSize: '0.875rem',
+    color: '#6b7280',
+    fontWeight: '500',
+    marginRight: '0.5rem',
+    display: 'flex',
+    alignItems: 'center',
+};
+
+const attributeValueStyle: React.CSSProperties = {
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    color: '#1f2937',
+    textTransform: 'capitalize',
 };

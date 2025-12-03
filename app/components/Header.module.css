@@ -1,0 +1,131 @@
+/* --- 1. Base Header Layout --- */
+.mugna-header {
+  /* Use Flexbox to align items horizontally */
+  display: flex;
+  /* Distribute space: Logo on the left, links in the middle, user on the right */
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1rem 3rem; /* Vertical padding and horizontal margin */
+  background-color: #202020; /* Dark background to match VS Code theme */
+  color: #ffffff; /* White text for contrast */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Subtle shadow */
+
+  /* Optional: Make the header sticky */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* --- 2. Logo Styling --- */
+.logo a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #a0c3ff; /* A bright, distinct color */
+  text-decoration: none; /* Remove underline */
+  transition: color 0.2s;
+}
+
+.logo a:hover {
+  color: #ffffff;
+}
+
+/* --- 3. Main Navigation Links --- */
+.main-nav ul {
+  list-style: none; /* Remove bullet points */
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.main-nav li {
+  margin: 0 1.25rem;
+}
+
+.main-nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+/* Underline effect on hover */
+.main-nav a:hover,
+.main-nav a.active {
+  color: #a0c3ff;
+}
+
+/* --- 4. User Profile and Dropdown --- */
+.user-profile {
+  position: relative; /* Crucial for positioning the dropdown menu */
+}
+
+.avatar-container {
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  background-color: #555555; /* Background color for avatar placeholder */
+  border-radius: 50%; /* Make it a circle */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition: background-color 0.2s;
+}
+
+.avatar-container:hover {
+  background-color: #a0c3ff;
+}
+
+.user-avatar {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.user-dropdown-menu {
+  /* Initial state: Hidden and positioned next to the avatar */
+  display: none; /* Will be toggled to 'block' with JavaScript */
+  position: absolute;
+  top: 100%; /* Position below the avatar container */
+  right: 0; /* Align to the right side of the avatar */
+
+  margin-top: 10px; /* Space between avatar and dropdown */
+  min-width: 150px;
+  background-color: #333333; /* Slightly lighter dark background for the menu */
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  padding: 10px 0;
+  z-index: 1010; /* Ensure it is above other content */
+}
+
+/* Styles when the dropdown is visible (you'll add a class like 'open' with JS) */
+.user-profile.open .user-dropdown-menu {
+    display: block;
+}
+
+.user-dropdown-menu a,
+.user-dropdown-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 15px;
+  text-align: left;
+  text-decoration: none;
+  color: #ffffff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.user-dropdown-menu a:hover,
+.user-dropdown-menu button:hover {
+  background-color: #444444; /* Highlight on hover */
+  color: #a0c3ff;
+}
+
+.user-dropdown-menu hr {
+  border: none;
+  border-top: 1px solid #444444;
+  margin: 5px 0;
+}
