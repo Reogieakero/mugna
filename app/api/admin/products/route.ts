@@ -10,13 +10,13 @@ export const runtime = 'nodejs';
 
 // 1. GET (Fetch all products)
 export async function GET() {
-  try {
-    const products = await ProductController.getAllProducts();
-    return NextResponse.json({ products }, { status: 200 });
-  } catch (error) {
-    console.error("API Error fetching products:", error);
-    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
-  }
+    try {
+        const products = await ProductController.getAllProducts();
+        return NextResponse.json({ products }, { status: 200 });
+    } catch (error) {
+        console.error("API Error fetching products:", error);
+        return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+    }
 }
 
 // 2. POST (Add a new product with File Upload)
@@ -32,9 +32,24 @@ export async function POST(request: Request) {
         const category = (formData.get('category') as string) || '';
         const imageFile = formData.get('image') as File | null;
         
+        // ⭐ NEW: Extract promotionType and discount
+        const promotionType = (formData.get('promotionType') as string) || 'None';
+        // Note: The value from formData is a string, convert it to a number. 
+        // We use parseFloat as the frontend sends '0' if the field is hidden.
+        const discount = parseFloat(formData.get('discount') as string) || 0;
+        // ⭐ END NEW EXTRACTION
+
         if (!name || isNaN(price) || price <= 0 || isNaN(stock) || stock < 0) {
-            return NextResponse.json({ error: "Missing or invalid product fields." }, { status: 400 });
+            return NextResponse.json({ error: "Missing or invalid product fields (Name, Price, Stock)." }, { status: 400 });
         }
+        
+        // ⭐ NEW: Server-side validation for Flash Deals discount
+        if (promotionType === 'Flash Deals' && (discount <= 0 || discount > 100)) {
+            return NextResponse.json({ 
+                error: "Flash Deals must have a discount percentage between 1 and 100." 
+            }, { status: 400 });
+        }
+        // ⭐ END NEW VALIDATION
 
         let imageUrl = '';
         
@@ -43,7 +58,12 @@ export async function POST(request: Request) {
             
             const timestamp = Date.now();
             const originalFilename = imageFile.name;
-            const filename = `${timestamp}-${originalFilename.replace(/[^a-z0-9.]/gi, '_')}`;
+            // Use path.extname to safely get the extension
+            const ext = path.extname(originalFilename); 
+            // Sanitize and create a safe filename
+            const baseName = originalFilename.slice(0, originalFilename.length - ext.length).replace(/[^a-z0-9]/gi, '_');
+
+            const filename = `${baseName}-${timestamp}${ext}`;
             
             // Resolve the path to the public/uploads directory
             const uploadDir = path.join(process.cwd(), 'public', 'uploads');
@@ -61,7 +81,16 @@ export async function POST(request: Request) {
         
         // 3. Save data to database
         const productData: CreateProduct = {
-            name, description, price, stock, category, imageUrl, 
+            name, 
+            description, 
+            price, 
+            stock, 
+            category, 
+            imageUrl, 
+            // ⭐ NEW: Pass the new fields to the controller ⭐
+            promotionType,
+            discount,
+            // ⭐ END NEW FIELDS
         };
 
         const newProduct = await ProductController.createProduct(productData);

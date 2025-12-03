@@ -11,7 +11,9 @@ interface ProductRow extends RowDataPacket {
     price: string; 
     stock: number;
     category: string;
-    image_url: string; // Snake case from DB
+    image_url: string; 
+    promotion_type: string;
+    discount: number; 
     created_at: Date;
     updated_at: Date;
 }
@@ -25,16 +27,23 @@ const mapRowToProduct = (row: ProductRow): Product => ({
     stock: row.stock,
     category: row.category,
     imageUrl: row.image_url,
+    promotionType: row.promotion_type,
+    discount: row.discount,
     createdAt: new Date(row.created_at),
     updatedAt: new Date(row.updated_at),
 });
+
+// --- BASE SELECT QUERY ---
+const PRODUCT_SELECT_FIELDS = 
+    'id, name, description, price, stock, category, image_url, promotion_type, discount, created_at, updated_at';
+// -------------------------
 
 
 export async function dbGetAllProducts(): Promise<Product[]> {
     const connection = await mysql.createConnection(dbConfig);
     try {
         const [rows] = await connection.execute(
-            'SELECT id, name, description, price, stock, category, image_url, created_at, updated_at FROM products ORDER BY created_at DESC'
+            `SELECT ${PRODUCT_SELECT_FIELDS} FROM products ORDER BY created_at DESC`
         );
         return (rows as ProductRow[]).map(mapRowToProduct); 
     } catch (error) {
@@ -51,16 +60,17 @@ export async function dbCreateProduct(productData: CreateProduct): Promise<Produ
     try {
         const [result] = await connection.execute(
             `INSERT INTO products 
-             (name, description, price, stock, category, image_url) 
-             VALUES (?, ?, ?, ?, ?, ?)`,
+             (name, description, price, stock, category, image_url, promotion_type, discount) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 productData.name, productData.description, productData.price,
                 productData.stock, productData.category, productData.imageUrl,
+                productData.promotionType, productData.discount,
             ]
         ) as [ResultSetHeader, FieldPacket[]]; 
 
         const [rows] = await connection.execute(
-            'SELECT id, name, description, price, stock, category, image_url, created_at, updated_at FROM products WHERE id = ?',
+            `SELECT ${PRODUCT_SELECT_FIELDS} FROM products WHERE id = ?`,
             [result.insertId]
         );
 
@@ -84,16 +94,32 @@ export async function dbUpdateProduct(updateData: UpdateProduct): Promise<Produc
     try {
         const fields: string[] = [];
         const values: (string | number)[] = [];
-
-        if (data.name !== undefined) { fields.push('name = ?'); values.push(data.name); }
-        if (data.description !== undefined) { fields.push('description = ?'); values.push(data.description); }
-        if (data.price !== undefined) { fields.push('price = ?'); values.push(data.price); }
-        if (data.stock !== undefined) { fields.push('stock = ?'); values.push(data.stock); }
-        if (data.category !== undefined) { fields.push('category = ?'); values.push(data.category); }
-        if (data.imageUrl !== undefined) { fields.push('image_url = ?'); values.push(data.imageUrl); }
         
+        for (const key in data) {
+            if (data[key as keyof typeof data] !== undefined) { 
+                let dbField: string;
+                const value = data[key as keyof typeof data];
+
+                switch (key) {
+                    case 'imageUrl':
+                        dbField = 'image_url';
+                        break;
+                    case 'promotionType':
+                        dbField = 'promotion_type';
+                        break;
+                    // Note: 'discount' maps directly to 'discount' in the database.
+                    default:
+                        dbField = key;
+                }
+                
+                fields.push(`${dbField} = ?`);
+                values.push(value as (string | number));
+            }
+        }
+
         if (fields.length === 0) {
-            const [rows] = await connection.execute('SELECT id, name, description, price, stock, category, image_url, created_at, updated_at FROM products WHERE id = ?', [id]);
+            // If nothing to update, just fetch and return the existing product
+            const [rows] = await connection.execute(`SELECT ${PRODUCT_SELECT_FIELDS} FROM products WHERE id = ?`, [id]);
             if (Array.isArray(rows) && rows.length > 0) {
                 return mapRowToProduct(rows[0] as ProductRow); 
             }
@@ -105,7 +131,7 @@ export async function dbUpdateProduct(updateData: UpdateProduct): Promise<Produc
         await connection.execute(query, [...values, id]);
 
         const [rows] = await connection.execute(
-            'SELECT id, name, description, price, stock, category, image_url, created_at, updated_at FROM products WHERE id = ?',
+            `SELECT ${PRODUCT_SELECT_FIELDS} FROM products WHERE id = ?`,
             [id]
         );
 

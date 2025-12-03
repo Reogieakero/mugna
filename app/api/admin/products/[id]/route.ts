@@ -1,6 +1,10 @@
 // app/api/admin/products/[id]/route.ts
 import { NextResponse } from "next/server";
 import { ProductController } from "@/lib/controllers/admin/product.controller"; 
+// ⭐ NEW IMPORTS: For file handling
+import path from 'path'; 
+import fs from 'fs/promises'; 
+// ⭐ END NEW IMPORTS
 
 // Helper function to reliably extract the ID from the request URL
 function getProductIdFromUrl(request: Request): number | null {
@@ -40,27 +44,53 @@ export async function PUT(request: Request, context: unknown) {
         const price = +(formData.get('price') as string); 
         const stock = parseInt(formData.get('stock') as string);
         
+        // ⭐ NEW: Extract promotionType and discount
+        const promotionType = (formData.get('promotionType') as string) || 'None';
+        const discount = parseFloat(formData.get('discount') as string) || 0;
+        // ⭐ END NEW EXTRACTION
+        
         // The client explicitly sends 'imageUrl' as 'null' string if the image was removed/replaced.
         const imageUrlData = formData.get('imageUrl') as string; 
         
         // Use 'let' for imageFile and imageUrl to allow reassignment later during upload logic
-        // This resolves the 'imageFile is assigned a value but never used. Use 'let' instead' warning
         const imageFile = formData.get('image') as File | null; 
-        const imageUrl: string | null = imageUrlData === 'null' ? null : imageUrlData;
-        
-        // ⭐ NOTE: IMAGE UPLOAD LOGIC REQUIRED HERE
-        // IF imageFile exists, you must:
-        // 1. Save the file (e.g., to S3, disk, or Vercel Blob).
-        // 2. Update the 'imageUrl' variable with the newly created public URL.
-        
-        // Example logic for image file handling (Replace with your actual upload code):
-        if (imageFile) {
-            // Placeholder: Simulate file upload and URL generation
-            // Replace this block with your actual file upload service call
-            console.log(`Processing new image upload for file: ${imageFile.name}`);
-            // imageUrl = await uploadImage(imageFile); // <-- Your actual upload function here
-            // For now, let's keep imageUrl as null or the existing one if no upload logic is added.
+        let imageUrl: string | null = imageUrlData === 'null' ? null : imageUrlData;
+
+        // ⭐ NEW VALIDATION: Server-side validation for Flash Deals discount
+        if (promotionType === 'Flash Deals' && (discount <= 0 || discount > 100)) {
+            return NextResponse.json({ 
+                error: "Flash Deals must have a discount percentage between 1 and 100." 
+            }, { status: 400 });
         }
+        // ⭐ END NEW VALIDATION
+
+        // Basic validation check 
+        if (!name || isNaN(price) || price <= 0 || isNaN(stock) || stock < 0) {
+            return NextResponse.json({ error: "Missing or invalid product fields." }, { status: 400 });
+        }
+        
+        // ⭐ IMPLEMENTED: IMAGE UPLOAD LOGIC from POST endpoint
+        if (imageFile && imageFile.size > 0) {
+            
+            const timestamp = Date.now();
+            const originalFilename = imageFile.name;
+            const ext = path.extname(originalFilename); 
+            const baseName = originalFilename.slice(0, originalFilename.length - ext.length).replace(/[^a-z0-9]/gi, '_');
+
+            const filename = `${baseName}-${timestamp}${ext}`;
+            
+            const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+            await fs.mkdir(uploadDir, { recursive: true });
+            
+            const filePath = path.join(uploadDir, filename);
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            
+            await fs.writeFile(filePath, buffer);
+
+            // Set the new public URL, overwriting the old one
+            imageUrl = `/uploads/${filename}`; 
+        }
+        // ⭐ END IMPLEMENTED IMAGE UPLOAD LOGIC
 
         const updateFields = {
             id: productId,
@@ -69,13 +99,12 @@ export async function PUT(request: Request, context: unknown) {
             price, 
             stock, 
             category,
-            // Pass the final URL string (will be '' if null)
+            // Pass the final URL string (will be the new image URL, old URL, or '' if removed)
             imageUrl: imageUrl || '', 
-        }
-
-        // Basic validation check 
-        if (!name || isNaN(price) || price <= 0 || isNaN(stock) || stock < 0) {
-            return NextResponse.json({ error: "Missing or invalid product fields." }, { status: 400 });
+            // ⭐ NEW: Include promotion fields
+            promotionType,
+            discount,
+            // ⭐ END NEW FIELDS
         }
         
         const updatedProduct = await ProductController.updateProduct(updateFields);
