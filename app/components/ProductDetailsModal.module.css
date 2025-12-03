@@ -1,0 +1,262 @@
+/* /app/components/ProductDetailsModal.module.css */
+
+/* --- Modal Overlay & Container --- */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modalContent {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+@media (prefers-color-scheme: dark) {
+  .modalContent {
+    background-color: #1a1a1a;
+    color: var(--text-dark);
+  }
+}
+
+/* --- Close Button --- */
+.closeButton {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  padding: 0;
+  z-index: 10;
+  transition: color 0.2s;
+}
+
+.closeButton:hover {
+  color: var(--primary-color);
+}
+
+/* --- Modal Body Layout --- */
+.modalBody {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .modalBody {
+    flex-direction: row;
+    min-height: 550px;
+  }
+}
+
+/* --- Image Section --- */
+.imageSection {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 300px;
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+@media (min-width: 768px) {
+  .productImage {
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 1rem;
+  }
+}
+
+
+/* --- Details Section --- */
+.detailsSection {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.infoContainer {
+    flex-grow: 1;
+}
+
+/* Info Styles */
+.productCategory {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.productName {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+}
+
+.productPrice {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-top: 0;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 1.5rem 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .divider {
+        border-top: 1px solid #333;
+    }
+}
+
+/* Description */
+.description h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.description p {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+@media (prefers-color-scheme: dark) {
+    .description p {
+        color: #a0a0a0;
+    }
+}
+
+
+/* --- Modal Actions (Quantity and Add to Cart) --- */
+.modalActions {
+  display: flex;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+@media (prefers-color-scheme: dark) {
+    .modalActions {
+        border-top: 1px solid #333;
+    }
+}
+
+
+/* Quantity Selector */
+.quantitySelector {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.quantityButton {
+  background-color: #f7f7f7;
+  border: none;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  height: 100%;
+}
+
+.quantityButton:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.quantityButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.quantityDisplay {
+  padding: 0 1rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  min-width: 40px;
+  text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+    .quantitySelector {
+        border-color: #444;
+    }
+    .quantityButton {
+        background-color: #2e2e2e;
+    }
+    .quantityButton:hover:not(:disabled) {
+        background-color: #383838;
+    }
+}
+
+/* Add to Cart Button (GRADIENT STYLE) */
+.addToCartButton {
+  flex-grow: 1;
+  /* Matching the black-to-white gradient from ProductCard's Buy Craft button */
+  background: linear-gradient(90deg, #000000, #ffffff); 
+  color: #fff; /* default text color */
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease; /* Transition 'background' */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.addToCartButton:hover {
+  /* Reversed gradient on hover */
+  background: linear-gradient(90deg, #ffffff, #000000); 
+  color: #fff; 
+}
+
+/* Dark Mode for Add to Cart Button */
+@media (prefers-color-scheme: dark) {
+  .addToCartButton {
+    background: linear-gradient(90deg, #ffffff, #000000); /* default gradient for dark mode */
+    color: #000; /* black text for contrast */
+  }
+  .addToCartButton:hover {
+    background: linear-gradient(90deg, #000000, #ffffff); /* reversed on hover */
+    color: #fff; /* white text for contrast */
+  }
+}

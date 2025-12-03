@@ -1,0 +1,192 @@
+/* --- Product Card Specific Styles --- */
+
+.productCard {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .productCard {
+    background-color: #1a1a1a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.productCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Image Container and Badge Styles */
+.productImageContainer {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  background-color: var(--accent-color);
+  border-bottom: 1px solid #ddd;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 1. Discount Badge (LEFT side) */
+.discountBadge {
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  background-color: #ff7518;
+  color: var(--text-light);
+  padding: 0.25rem 0.75rem;
+  border-top-right-radius: 9999px;
+  border-bottom-right-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  z-index: 20;
+}
+
+/* 2. Featured Tag (RIGHT side) */
+.featuredTagRight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 0.25rem 0.6rem;
+  border-bottom-left-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  z-index: 20;
+  text-transform: uppercase;
+}
+
+@media (prefers-color-scheme: dark) {
+  .featuredTagRight {
+    background-color: #444;
+    color: var(--text-dark);
+  }
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  transition: transform 0.3s ease;
+}
+
+.productCard:hover .productImage {
+  transform: scale(1.05);
+}
+
+.productInfo {
+  padding: 0.75rem 1rem;
+}
+
+/* Category/Type Styles - Used for "HANDICRAFTS" */
+.productCategory {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Product Name Styles */
+.productName {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.25rem;
+  padding-bottom: 0;
+}
+
+/* Price Styles */
+.productPrice {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-top: 0.75rem;
+}
+
+/* --- ACTION BUTTON STYLES --- */
+.productActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.buyCraftButton {
+  flex-grow: 1;
+  background: linear-gradient(90deg, #000000, #ffffff); /* black to white gradient */
+  color: #fff; /* default text color */
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.buyCraftButton:hover {
+  background: linear-gradient(90deg, #ffffff, #000000); /* reversed gradient on hover */
+  color: #fff; /* keep text white for contrast */
+}
+
+.quickCartButton {
+  width: 3rem;
+  height: 3rem;
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  padding: 0;
+}
+
+.quickCartButton:hover {
+  background-color: #e0e0e0;
+}
+
+/* Style for the Lucide icon */
+.cartIcon {
+  color: var(--primary-color);
+  transition: color 0.2s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+   .buyCraftButton {
+    background: linear-gradient(90deg, #ffffff, #000000); /* default gradient for dark mode */
+    color: #000; /* black text for contrast */
+  }
+  .buyCraftButton:hover {
+    background: linear-gradient(90deg, #000000, #ffffff); /* reversed on hover */
+    color: #fff; /* white text for contrast */
+  }
+
+  .quickCartButton {
+    background-color: #2e2e2e;
+    border-color: #444;
+  }
+  .quickCartButton:hover {
+    background-color: #383838;
+  }
+  /* Dark mode icon color adjustment */
+  .cartIcon {
+    color: var(--text-dark);
+  }
+}

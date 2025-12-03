@@ -167,3 +167,19 @@ export async function dbDeleteProduct(productId: number): Promise<void> {
         await connection.end();
     }
 }
+
+export async function dbGetProductsByPromotionType(promotionType: string): Promise<Product[]> {
+    const connection = await mysql.createConnection(dbConfig);
+    try {
+        const [rows] = await connection.execute(
+            `SELECT ${PRODUCT_SELECT_FIELDS} FROM products WHERE promotion_type = ? ORDER BY created_at DESC LIMIT 4`, // LIMIT 4 for home page feature
+            [promotionType]
+        );
+        return (rows as ProductRow[]).map(mapRowToProduct); 
+    } catch (error) {
+        console.error(`Error fetching products by promotion type '${promotionType}':`, error);
+        throw new Error('Database query failed to retrieve featured products.');
+    } finally {
+        await connection.end();
+    }
+}

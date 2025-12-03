@@ -1,23 +1,23 @@
 /* --- Global Variables for Consistency --- */
 :root {
   --primary-color: #000000; /* Black */
-  --secondary-color: #e4e4e7; /* Light Gray */
-  --text-dark: #1f2937; /* Dark text */
-  --text-light: #ffffff; /* White text - USED FOR HERO TEXT */
-  --accent-color: #383838; /* Slightly lighter black for hover */
+  --secondary-color: #f9f9f9; /* Light off-white background for general use */
+  --text-dark: #1f2937;
+  --text-light: #ffffff;
+  --accent-color: #383838;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --primary-color: #ffffff; /* White in dark mode */
-    --secondary-color: #27272a; /* Dark background */
-    --text-dark: #fafafa; /* Light text */
-    --text-light: #1a1a1a; /* Dark text on light elements */
+    --primary-color: #ffffff;
+    --secondary-color: #27272a;
+    --text-dark: #fafafa;
+    --text-light: #1a1a1a;
     --accent-color: #ccc;
   }
 }
 
-/* --- Re-use Animation and Base Styles --- */
+/* --- Animations --- */
 .staggerIn {
   animation: fadeIn 0.8s forwards;
   opacity: 0;
@@ -31,13 +31,13 @@
   }
 }
 
+/* --- Home Container --- */
 .homeContainer {
-  /* Ensure the content spans the full width and allows for header/footer */
   min-height: 100vh;
   background-color: var(--secondary-color);
 }
 
-/* --- 1. Hero Section (Reusing Login Background) --- */
+/* --- Hero Section --- */
 .heroSection {
   position: relative;
   height: 100vh;
@@ -61,7 +61,6 @@
   }
 }
 
-/* ---- Background Video --- */
 .backgroundVideo {
   position: absolute;
   inset: 0;
@@ -72,7 +71,6 @@
   pointer-events: none;
 }
 
-/* ---- Dark Overlay --- */
 .backgroundOverlay {
   position: absolute;
   inset: 0;
@@ -124,7 +122,7 @@
   }
 }
 
-/* BUTTONS */
+/* --- Buttons --- */
 .primaryButton,
 .secondaryButton {
   display: inline-flex;
@@ -155,12 +153,14 @@
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* --- 2. Featured Products Section --- */
+/* --- Featured Products Section (Shades of White) --- */
 .featuredSection {
   padding: 4rem 2rem;
   max-width: 80rem;
   margin: 0 auto;
 }
+
+
 
 .sectionTitle {
   font-size: 2.5rem;
@@ -172,14 +172,14 @@
 
 .sectionSubtitle {
   font-size: 1.1rem;
-  color: #6b7280; /* Neutral gray */
+  color: #6b7280;
   text-align: center;
   margin-bottom: 3rem;
 }
 
 @media (prefers-color-scheme: dark) {
   .sectionSubtitle {
-    color: #a1a1aa; 
+    color: #a1a1aa;
   }
 }
 
@@ -190,36 +190,37 @@
   margin-bottom: 3rem;
 }
 
+/* Product Card: pure white with shadow to create depth */
 .productCard {
   display: flex;
   flex-direction: column;
   text-decoration: none;
-  background-color: #ffffff;
+  background-color: #ffffff; /* Bright white card */
   border-radius: 0.75rem;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 @media (prefers-color-scheme: dark) {
   .productCard {
-    background-color: #1a1a1a;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    background-color: #2a2a2a;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   }
 }
 
 .productCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
 .productImagePlaceholder {
   height: 250px;
-  background-color: #e5e7eb;
+  background-color: #f1f1f1; /* Slightly lighter white shade for image placeholders */
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .productCard > * {
@@ -231,14 +232,12 @@
   font-weight: 600;
   color: var(--text-dark);
   margin-bottom: 0.25rem;
-  padding-bottom: 0;
 }
 
 .productCrafter {
   font-size: 0.9rem;
   color: #6b7280;
   margin-bottom: 0.5rem;
-  padding-top: 0;
 }
 
 .productPrice {
@@ -247,26 +246,44 @@
   color: var(--primary-color);
 }
 
+/* --- Professional "View All Products" Button --- */
 .allProductsLinkContainer {
   text-align: center;
+  margin-top: 2rem;
 }
 
-.allProductsLink {
-  color: var(--primary-color);
-  font-weight: 500;
+.allProductsButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(90deg, #ffffff, #f1f1f1); /* Light gradient shades of white */
+  color: #000;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
   text-decoration: none;
-  border-bottom: 2px solid transparent;
-  transition: border-bottom-color 0.2s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.allProductsLink:hover {
-  border-bottom-color: var(--primary-color);
+.allProductsButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  background: linear-gradient(90deg, #f1f1f1, #e8e8e8); /* Hover: subtle shift of whites */
 }
 
+.allProductsButton .arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
 
-/* --- 3. Crafter Call-to-Action --- */
+.allProductsButton:hover .arrow {
+  transform: translateX(5px);
+}
+
+/* --- Crafter Call-to-Action --- */
 .crafterCTA {
-  background-color: var(--primary-color); /* Black or Dark Primary */
+  background-color: var(--primary-color);
   color: var(--text-light);
   padding: 4rem 2rem;
   text-align: center;
@@ -291,7 +308,6 @@
 
 .ctaButton {
   display: inline-block;
-  /* Use white background, black text for high contrast CTA */
   background-color: white;
   color: black; 
   padding: 0.75rem 2.5rem;
@@ -306,7 +322,7 @@
   opacity: 0.9;
 }
 
-/* --- 4. Footer --- */
+/* --- Footer --- */
 .footer {
   padding: 1.5rem 2rem;
   text-align: center;
