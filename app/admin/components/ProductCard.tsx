@@ -4,36 +4,61 @@
 import { useState } from "react";
 import { Product } from "@/lib/db/product.model";
 import { Edit, Trash2, ShoppingBag } from "lucide-react";
-import Image from "next/image"; 
+import Image from "next/image";
 import ProductDetailModal from './ProductDetailModal';
+import DeleteConfirmationModal from './DeleteConfirmationModal'; // Assuming this exists
+import EditProductModal from './EditProductModal'; // <--- NEW IMPORT
 
 interface ProductCardProps {
   product: Product;
-  onEdit: (id: number) => void;
+  // NOTE: onEdit now needs to trigger the state in the parent component 
+  // to load the correct product data into the EditModal if it were in the parent.
+  // Since we are adding the EditModal here, onEdit simply opens the modal.
+  onEdit: (product: Product) => void; // <--- The handler in the parent should update the product list
   onDelete: (id: number) => void;
+  // New handler for when the product is successfully updated via the modal
+  onProductUpdated: (updatedProduct: Product) => void; 
 }
 
-export default function ProductCard({ product, onEdit, onDelete }: ProductCardProps) {
+export default function ProductCard({ 
+    product, 
+    onEdit: onEditFromProps, // Renamed to avoid conflict
+    onDelete,
+    onProductUpdated,
+}: ProductCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // <--- NEW STATE
   const [isHovered, setIsHovered] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
-  const imageUrl = product.imageUrl || '/images/placeholder.jpg'; 
+  const imageUrl = product.imageUrl || '/images/placeholder.jpg';
   const isImageValid = product.imageUrl && product.imageUrl !== '';
   
-  const handleCardClick = () => {
-    setIsModalOpen(true);
+  const handleCardClick = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  // Edit Handlers
+  const openEditModal = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEditModalOpen(true);
   };
-  
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closeEditModal = () => setIsEditModalOpen(false);
+
+  // Delete Handlers
+  const openDeleteConfirm = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsDeleteConfirmOpen(true);
+  };
+  const closeDeleteConfirm = () => setIsDeleteConfirmOpen(false);
+  const handleConfirmDelete = () => {
+    onDelete(product.id);
+    closeDeleteConfirm();
   };
 
-  // Prevent click on buttons from triggering the card click (and modal)
-  const handleActionClick = (e: React.MouseEvent) => {
-      e.stopPropagation();
-  };
 
-  // Helper function to render image or placeholder (for the card, not the modal)
+  // Prevents the card click (modal open) when clicking action buttons
+  const handleActionClick = (e: React.MouseEvent) => e.stopPropagation();
+
   const renderProductImage = (style: React.CSSProperties, size: number) => (
     isImageValid ? (
         <Image
@@ -51,6 +76,13 @@ export default function ProductCard({ product, onEdit, onDelete }: ProductCardPr
       )
   );
 
+  // Handle successful update from the Edit Modal
+  const handleProductUpdated = (updatedProduct: Product) => {
+      onProductUpdated(updatedProduct); // Update the list in the parent
+      closeEditModal(); // Close the modal
+  }
+
+
   return (
     <>
       {/* Product Card */}
@@ -66,7 +98,7 @@ export default function ProductCard({ product, onEdit, onDelete }: ProductCardPr
         </div>
 
         <div style={contentStyle}>
-          {/* ACTION BUTTONS and Title/Category */}
+          {/* Title/Category & Actions */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
               <h3 style={titleStyle}>{product.name}</h3>
@@ -74,18 +106,18 @@ export default function ProductCard({ product, onEdit, onDelete }: ProductCardPr
             </div>
             
             <div style={actionsStyle} onClick={handleActionClick}>
-              {/* EDIT BUTTON (Icon Only) */}
+              {/* EDIT ICON */}
               <button 
-                onClick={() => onEdit(product.id)} 
+                onClick={openEditModal} // <--- UPDATED HANDLER
                 style={editButtonStyle} 
                 title="Edit"
               >
                 <Edit size={18} />
               </button>
 
-              {/* DELETE BUTTON (Icon Only) */}
+              {/* DELETE ICON */}
               <button 
-                onClick={() => onDelete(product.id)} 
+                onClick={openDeleteConfirm} 
                 style={deleteButtonStyle}
                 title="Delete"
               >
@@ -98,7 +130,7 @@ export default function ProductCard({ product, onEdit, onDelete }: ProductCardPr
           <div style={detailsRowStyle}>
             <div style={detailItemStyle}>
               <span style={detailLabelStyle}>Price:</span>
-              <span style={detailValueStyle}>${product.price.toFixed(2)}</span>
+              <span style={detailValueStyle}>₱{product.price.toFixed(2)}</span>
             </div>
             <div style={detailItemStyle}>
               <span style={detailLabelStyle}>Stock:</span>
@@ -115,19 +147,37 @@ export default function ProductCard({ product, onEdit, onDelete }: ProductCardPr
         </div>
       </div>
       
-      {/* USE THE NEW MODAL COMPONENT */}
+      {/* Product Detail Modal */}
       <ProductDetailModal
           product={product}
           isOpen={isModalOpen}
           onClose={closeModal}
-          onEdit={onEdit}
+          // The onEdit function passed to the detail modal should also open the edit form
+          onEdit={() => setIsEditModalOpen(true)} 
+      />
+
+      {/* Edit Product Modal */}
+      {/* We pass the full product object to initialize the form */}
+      <EditProductModal
+          product={product}
+          isOpen={isEditModalOpen}
+          onClose={closeEditModal}
+          onProductUpdated={handleProductUpdated}
+      />
+      
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+          productName={product.name}
+          isOpen={isDeleteConfirmOpen}
+          onClose={closeDeleteConfirm}
+          onConfirm={handleConfirmDelete}
       />
     </>
   );
 }
 
 /* ============================== */
-/*     PRODUCT CARD STYLES ONLY    */
+/* STYLES (Kept as provided)      */
 /* ============================== */
 
 const cardStyle: React.CSSProperties = {
@@ -138,22 +188,16 @@ const cardStyle: React.CSSProperties = {
   display: 'flex', 
   flexDirection: 'column',
   transition: 'all 0.3s ease-in-out', 
-  // FIX: Use longhand border properties
   borderWidth: '1px',
   borderStyle: 'solid',
   borderColor: '#e5e7eb',
 };
 
-// Hover Style
 const cardHoverStyle: React.CSSProperties = {
-    // Lift effect
     transform: 'translateY(-4px)',
-    // Darker/larger shadow
     boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05)',
-    // Overriding the longhand borderColor is now safe
     borderColor: '#d1d5db', 
 };
-
 
 const imageWrapperStyle: React.CSSProperties = {
   position: 'relative', 

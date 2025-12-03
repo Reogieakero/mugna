@@ -4,15 +4,21 @@
 import AdminLayout from "../components/AdminLayout";
 import { PlusCircle, ShoppingBag } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
-import { Product } from "@/lib/db/product.model"; 
+import { Product } from "@/lib/db/product.model";
 import AddProductModal from "../components/AddProductModal"; 
 import ProductCard from "../components/ProductCard"; 
+// Assuming these imports exist from the previous steps:
+import EditProductModal from "../components/EditProductModal"; 
+import DeleteConfirmationModal from "../components/DeleteConfirmationModal"; 
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false); // Renamed for clarity
+
+  // --- NEW STATE FOR EDITING ---
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const fetchProducts = useCallback(async () => {
     setIsLoading(true);
@@ -41,24 +47,43 @@ export default function AdminProductsPage() {
     fetchProducts();
   }, [fetchProducts]);
 
-  const handleAddProduct = () => setIsModalOpen(true); 
-  const handleCloseModal = () => setIsModalOpen(false); 
-  const handleProductAdded = () => { fetchProducts(); handleCloseModal(); };
+  // --- ADD HANDLERS ---
+  const handleOpenAddModal = () => setIsAddModalOpen(true); 
+  const handleCloseAddModal = () => setIsAddModalOpen(false); 
+  const handleProductAdded = () => { fetchProducts(); handleCloseAddModal(); };
   
-  const handleEditProduct = (productId: number) => {
-    alert(`Editing product ID: ${productId}. (Implement edit modal/form here)`);
+  // --- EDIT HANDLERS (UPDATED) ---
+  // 1. Opens the Edit Modal by setting the product object
+  const handleEditProduct = (productToEdit: Product) => {
+    setEditingProduct(productToEdit); 
   };
-
+  
+  // 2. Closes the Edit Modal
+  const handleCloseEditModal = () => {
+    setEditingProduct(null);
+  };
+  
+  // 3. Updates the list with the single modified product (optimistic update)
+  const handleProductUpdated = (updatedProduct: Product) => {
+    setProducts(prevProducts => 
+      prevProducts.map(p => p.id === updatedProduct.id ? updatedProduct : p)
+    );
+    handleCloseEditModal();
+  };
+  
+  // --- DELETE HANDLER (Refined) ---
   const handleDeleteProduct = async (productId: number) => {
-    if (!window.confirm(`Are you sure you want to delete product ID: ${productId}?`)) return;
+    // Note: The confirmation modal logic is now handled inside ProductCard
     try {
         const response = await fetch(`/api/admin/products/${productId}`, { method: 'DELETE' });
-        if (response.status !== 204) {
+        
+        if (response.status === 204) {
+             // Filter the deleted product out of the state immediately (optimistic deletion)
+            setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
+        } else {
             const data = await response.json();
             throw new Error(data.error || `HTTP error! Status: ${response.status}`);
         }
-        alert(`Product ID ${productId} deleted successfully.`);
-        fetchProducts(); 
     } catch (err: unknown) {
         const errorMessage = err instanceof Error ? err.message : "An unknown error occurred.";
         alert(`Deletion failed: ${errorMessage}`);
@@ -71,7 +96,7 @@ export default function AdminProductsPage() {
         
       <div style={headerContainerStyle}>
         <h1 style={headerTitleStyle}>Product Management</h1>
-        <button onClick={handleAddProduct} style={addButtonStyles}>
+        <button onClick={handleOpenAddModal} style={addButtonStyles}>
           <PlusCircle size={18} style={{ marginRight: "0.5rem" }} />
           Add New Product
         </button>
@@ -91,8 +116,11 @@ export default function AdminProductsPage() {
             <ProductCard 
                 key={product.id}
                 product={product}
-                onEdit={handleEditProduct}
+                // Pass the product object for editing instead of just the ID
+                onEdit={() => handleEditProduct(product)} 
                 onDelete={handleDeleteProduct}
+                // Pass the update handler down to the modal via the card
+                onProductUpdated={handleProductUpdated}
             />
           ))}
         </div>
@@ -101,15 +129,27 @@ export default function AdminProductsPage() {
       {!isLoading && !error && products.length === 0 && (
         <div style={noProductsStyle}>
           <ShoppingBag size={48} color="#9ca3af" style={{ marginBottom: '1rem' }} />
-          <p>No products found. Click Add New Produc to populate your inventory.</p>
+          <p>No products found. Click **Add New Product** to populate your inventory.</p>
         </div>
       )}
 
+      {/* Add Product Modal */}
       <AddProductModal 
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
+        isOpen={isAddModalOpen}
+        onClose={handleCloseAddModal}
         onProductAdded={handleProductAdded}
       />
+      
+      {/* Edit Product Modal (Renders when editingProduct is not null) */}
+      {editingProduct && (
+          <EditProductModal
+              product={editingProduct}
+              isOpen={!!editingProduct} // Always true when editingProduct is set
+              onClose={handleCloseEditModal}
+              onProductUpdated={handleProductUpdated} // Use the specific update handler
+          />
+      )}
+
     </AdminLayout>
   );
 }
@@ -118,7 +158,7 @@ export default function AdminProductsPage() {
 const headerContainerStyle = { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" };
 const headerTitleStyle = { fontSize: "2rem", fontWeight: "700", color: "#1f2937" };
 const addButtonStyles = {
-    display: "flex", alignItems: "center", padding: "0.5rem 1rem", backgroundColor: "#10b981",
+    display: "flex", alignItems: "center", padding: "0.5rem 1rem", backgroundColor: "#1f2937",
     color: "white", border: "none", borderRadius: "0.375rem", cursor: "pointer", fontWeight: "600",
     transition: "background-color 0.2s",
 };
