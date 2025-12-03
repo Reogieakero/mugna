@@ -10,14 +10,14 @@ import DeleteConfirmationModal from './DeleteConfirmationModal'; // Assuming thi
 import EditProductModal from './EditProductModal'; // <--- NEW IMPORT
 
 interface ProductCardProps {
-  product: Product;
-  // NOTE: onEdit now needs to trigger the state in the parent component 
-  // to load the correct product data into the EditModal if it were in the parent.
-  // Since we are adding the EditModal here, onEdit simply opens the modal.
-  onEdit: (product: Product) => void; // <--- The handler in the parent should update the product list
-  onDelete: (id: number) => void;
-  // New handler for when the product is successfully updated via the modal
-  onProductUpdated: (updatedProduct: Product) => void; 
+    product: Product;
+    // NOTE: onEdit now needs to trigger the state in the parent component 
+    // to load the correct product data into the EditModal if it were in the parent.
+    // Since we are adding the EditModal here, onEdit simply opens the modal.
+    onEdit: (product: Product) => void; // <--- The handler in the parent should update the product list
+    onDelete: (id: number) => void;
+    // New handler for when the product is successfully updated via the modal
+    onProductUpdated: (updatedProduct: Product) => void; 
 }
 
 export default function ProductCard({ 
@@ -26,171 +26,184 @@ export default function ProductCard({
     onDelete,
     onProductUpdated,
 }: ProductCardProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // <--- NEW STATE
-  const [isHovered, setIsHovered] = useState(false);
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false); // <--- NEW STATE
+    const [isHovered, setIsHovered] = useState(false);
+    const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
-  const imageUrl = product.imageUrl || '/images/placeholder.jpg';
-  const isImageValid = product.imageUrl && product.imageUrl !== '';
-  
-  const handleCardClick = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+    const imageUrl = product.imageUrl || '/images/placeholder.jpg';
+    const isImageValid = product.imageUrl && product.imageUrl !== '';
+    
+    const handleCardClick = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
-  // Edit Handlers
-  const openEditModal = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsEditModalOpen(true);
-  };
-  const closeEditModal = () => setIsEditModalOpen(false);
+    // Edit Handlers
+    const openEditModal = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsEditModalOpen(true);
+    };
+    const closeEditModal = () => setIsEditModalOpen(false);
 
-  // Delete Handlers
-  const openDeleteConfirm = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsDeleteConfirmOpen(true);
-  };
-  const closeDeleteConfirm = () => setIsDeleteConfirmOpen(false);
-  const handleConfirmDelete = () => {
-    onDelete(product.id);
-    closeDeleteConfirm();
-  };
-
-
-  // Prevents the card click (modal open) when clicking action buttons
-  const handleActionClick = (e: React.MouseEvent) => e.stopPropagation();
-
-  const renderProductImage = (style: React.CSSProperties, size: number) => (
-    isImageValid ? (
-        <Image
-          src={imageUrl}
-          alt={product.name}
-          fill
-          sizes={size.toString() + "px"}
-          style={{ objectFit: "cover", ...style }}
-        />
-      ) : (
-        <div style={{ ...placeholderImageStyle, ...style, position: 'absolute' }}>
-          <ShoppingBag size={size / 10} color="#9ca3af" />
-          <p style={{ marginTop: '0.5rem', color: '#6b7280', fontSize: '0.875rem' }}>Image Not Available</p>
-        </div>
-      )
-  );
-
-  // Handle successful update from the Edit Modal
-  const handleProductUpdated = (updatedProduct: Product) => {
-      onProductUpdated(updatedProduct); // Update the list in the parent
-      closeEditModal(); // Close the modal
-  }
+    // Delete Handlers
+    const openDeleteConfirm = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsDeleteConfirmOpen(true);
+    };
+    const closeDeleteConfirm = () => setIsDeleteConfirmOpen(false);
+    const handleConfirmDelete = () => {
+        onDelete(product.id);
+        closeDeleteConfirm();
+    };
 
 
-  return (
-    <>
-      {/* Product Card */}
-      <div 
-        style={isHovered ? { ...cardStyle, ...cardHoverStyle, cursor: 'pointer' } : { ...cardStyle, cursor: 'pointer' }} 
-        onClick={handleCardClick}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {/* Product Image */}
-        <div style={imageWrapperStyle}>
-          {renderProductImage({ borderTopLeftRadius: '0.75rem', borderTopRightRadius: '0.75rem' }, 300)}
-        </div>
+    // Prevents the card click (modal open) when clicking action buttons
+    const handleActionClick = (e: React.MouseEvent) => e.stopPropagation();
 
-        <div style={contentStyle}>
-          {/* Title/Category & Actions */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div>
-              <h3 style={titleStyle}>{product.name}</h3>
-              <p style={categoryStyle}>{product.category || 'Uncategorized'}</p>
+    const renderProductImage = (style: React.CSSProperties, size: number) => (
+        isImageValid ? (
+            <Image
+              src={imageUrl}
+              alt={product.name}
+              fill
+              sizes={size.toString() + "px"}
+              style={{ objectFit: "cover", ...style }}
+            />
+          ) : (
+            <div style={{ ...placeholderImageStyle, ...style, position: 'absolute' }}>
+              <ShoppingBag size={size / 10} color="#9ca3af" />
+              <p style={{ marginTop: '0.5rem', color: '#6b7280', fontSize: '0.875rem' }}>Image Not Available</p>
+            </div>
+          )
+    );
+
+    // Handle successful update from the Edit Modal
+    const handleProductUpdated = (updatedProduct: Product) => {
+        onProductUpdated(updatedProduct); // Update the list in the parent
+        closeEditModal(); // Close the modal
+    }
+
+
+    return (
+        <>
+            {/* Product Card */}
+            <div 
+                style={isHovered ? { ...cardStyle, ...cardHoverStyle, cursor: 'pointer' } : { ...cardStyle, cursor: 'pointer' }} 
+                onClick={handleCardClick}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+            >
+                {/* Product Image */}
+                <div style={imageWrapperStyle}>
+                    {renderProductImage({ borderTopLeftRadius: '0.75rem', borderTopRightRadius: '0.75rem' }, 300)}
+                    
+                    {/* ⭐ NEW: PROMOTION TAG - Top Right Corner ⭐ */}
+                    {product.promotionType && product.promotionType !== 'None' && (
+                        <div style={promotionTagStyle(product.promotionType)}>
+                            {product.promotionType}
+                            {/* Conditional discount display for Flash Deals */}
+                            {product.promotionType === 'Flash Deals' && product.discount > 0 && 
+                                <span style={{ marginLeft: '0.4rem', fontWeight: 'bold' }}>
+                                    (-{product.discount}%)
+                                </span>
+                            }
+                        </div>
+                    )}
+                </div>
+
+                <div style={contentStyle}>
+                    {/* Title/Category & Actions */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <h3 style={titleStyle}>{product.name}</h3>
+                            <p style={categoryStyle}>{product.category || 'Uncategorized'}</p>
+                        </div>
+                        
+                        <div style={actionsStyle} onClick={handleActionClick}>
+                            {/* EDIT ICON */}
+                            <button 
+                                onClick={openEditModal} // <--- UPDATED HANDLER
+                                style={editButtonStyle} 
+                                title="Edit"
+                            >
+                                <Edit size={18} />
+                            </button>
+
+                            {/* DELETE ICON */}
+                            <button 
+                                onClick={openDeleteConfirm} 
+                                style={deleteButtonStyle}
+                                title="Delete"
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        </div>
+                    </div>
+                    
+                    {/* DETAILS and DESCRIPTION */}
+                    <div style={detailsRowStyle}>
+                        <div style={detailItemStyle}>
+                            <span style={detailLabelStyle}>Price:</span>
+                            <span style={detailValueStyle}>₱{product.price.toFixed(2)}</span>
+                        </div>
+                        <div style={detailItemStyle}>
+                            <span style={detailLabelStyle}>Stock:</span>
+                            <span style={stockStyle(product.stock)}>{product.stock} in stock</span>
+                        </div>
+                    </div>
+                    
+                    <p style={descriptionStyle}>
+                        {product.description ? 
+                            `${product.description.substring(0, 50)}${product.description.length > 50 ? '...' : ''}`
+                            : 'No description provided.'}
+                    </p>
+
+                </div>
             </div>
             
-            <div style={actionsStyle} onClick={handleActionClick}>
-              {/* EDIT ICON */}
-              <button 
-                onClick={openEditModal} // <--- UPDATED HANDLER
-                style={editButtonStyle} 
-                title="Edit"
-              >
-                <Edit size={18} />
-              </button>
+            {/* Product Detail Modal */}
+            <ProductDetailModal
+                product={product}
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                // The onEdit function passed to the detail modal should also open the edit form
+                onEdit={() => setIsEditModalOpen(true)} 
+            />
 
-              {/* DELETE ICON */}
-              <button 
-                onClick={openDeleteConfirm} 
-                style={deleteButtonStyle}
-                title="Delete"
-              >
-                <Trash2 size={18} />
-              </button>
-            </div>
-          </div>
-          
-          {/* DETAILS and DESCRIPTION */}
-          <div style={detailsRowStyle}>
-            <div style={detailItemStyle}>
-              <span style={detailLabelStyle}>Price:</span>
-              <span style={detailValueStyle}>₱{product.price.toFixed(2)}</span>
-            </div>
-            <div style={detailItemStyle}>
-              <span style={detailLabelStyle}>Stock:</span>
-              <span style={stockStyle(product.stock)}>{product.stock} in stock</span>
-            </div>
-          </div>
-          
-          <p style={descriptionStyle}>
-            {product.description ? 
-              `${product.description.substring(0, 50)}${product.description.length > 50 ? '...' : ''}`
-              : 'No description provided.'}
-          </p>
-
-        </div>
-      </div>
-      
-      {/* Product Detail Modal */}
-      <ProductDetailModal
-          product={product}
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          // The onEdit function passed to the detail modal should also open the edit form
-          onEdit={() => setIsEditModalOpen(true)} 
-      />
-
-      {/* Edit Product Modal */}
-      {/* We pass the full product object to initialize the form */}
-      <EditProductModal
-          product={product}
-          isOpen={isEditModalOpen}
-          onClose={closeEditModal}
-          onProductUpdated={handleProductUpdated}
-      />
-      
-      {/* Delete Confirmation Modal */}
-      <DeleteConfirmationModal
-          productName={product.name}
-          isOpen={isDeleteConfirmOpen}
-          onClose={closeDeleteConfirm}
-          onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
+            {/* Edit Product Modal */}
+            {/* We pass the full product object to initialize the form */}
+            <EditProductModal
+                product={product}
+                isOpen={isEditModalOpen}
+                onClose={closeEditModal}
+                onProductUpdated={handleProductUpdated}
+            />
+            
+            {/* Delete Confirmation Modal */}
+            <DeleteConfirmationModal
+                productName={product.name}
+                isOpen={isDeleteConfirmOpen}
+                onClose={closeDeleteConfirm}
+                onConfirm={handleConfirmDelete}
+            />
+        </>
+    );
 }
 
 /* ============================== */
-/* STYLES (Kept as provided)      */
+/* STYLES (Updated with promotion tag styles)    */
 /* ============================== */
 
 const cardStyle: React.CSSProperties = {
-  backgroundColor: 'white', 
-  borderRadius: '0.75rem', 
-  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06)',
-  overflow: 'hidden', 
-  display: 'flex', 
-  flexDirection: 'column',
-  transition: 'all 0.3s ease-in-out', 
-  borderWidth: '1px',
-  borderStyle: 'solid',
-  borderColor: '#e5e7eb',
+    backgroundColor: 'white', 
+    borderRadius: '0.75rem', 
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06)',
+    overflow: 'hidden', 
+    display: 'flex', 
+    flexDirection: 'column',
+    transition: 'all 0.3s ease-in-out', 
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: '#e5e7eb',
 };
 
 const cardHoverStyle: React.CSSProperties = {
@@ -200,21 +213,21 @@ const cardHoverStyle: React.CSSProperties = {
 };
 
 const imageWrapperStyle: React.CSSProperties = {
-  position: 'relative', 
-  width: '100%', 
-  paddingTop: '66.67%',
-  backgroundColor: '#f3f4f6', 
-  display: 'flex', 
-  justifyContent: 'center',
-  alignItems: 'center',
+    position: 'relative', 
+    width: '100%', 
+    paddingTop: '66.67%',
+    backgroundColor: '#f3f4f6', 
+    display: 'flex', 
+    justifyContent: 'center',
+    alignItems: 'center',
 };
 
 const placeholderImageStyle: React.CSSProperties = {
-  position: 'absolute', 
-  top: 0, bottom: 0, left: 0, right: 0,
-  display: 'flex', flexDirection: 'column', 
-  justifyContent: 'center', alignItems: 'center', 
-  color: '#9ca3af',
+    position: 'absolute', 
+    top: 0, bottom: 0, left: 0, right: 0,
+    display: 'flex', flexDirection: 'column', 
+    justifyContent: 'center', alignItems: 'center', 
+    color: '#9ca3af',
 };
 
 const contentStyle: React.CSSProperties = { padding: '1.25rem', display: 'flex', flexDirection: 'column' }; 
@@ -229,24 +242,24 @@ const stockStyle = (stock: number): React.CSSProperties => ({ fontSize: '1rem', 
 const descriptionStyle: React.CSSProperties = { fontSize: '0.875rem', color: '#4b5563', marginBottom: '1rem' };
 
 const actionsStyle: React.CSSProperties = { 
-  display: 'flex', 
-  gap: '0.5rem',
-  marginTop: '0', 
+    display: 'flex', 
+    gap: '0.5rem',
+    marginTop: '0', 
 };
 
 const iconButtonStyle: React.CSSProperties = { 
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '32px', 
-  height: '32px', 
-  borderRadius: '0.5rem',
-  border: 'none',
-  cursor: 'pointer',
-  backgroundColor: 'transparent',
-  color: '#6b7280',
-  transition: 'color 0.15s ease-in-out',
-  padding: '0',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '32px', 
+    height: '32px', 
+    borderRadius: '0.5rem',
+    border: 'none',
+    cursor: 'pointer',
+    backgroundColor: 'transparent',
+    color: '#6b7280',
+    transition: 'color 0.15s ease-in-out',
+    padding: '0',
 };
 
 const editButtonStyle: React.CSSProperties = {
@@ -258,3 +271,38 @@ const deleteButtonStyle: React.CSSProperties = {
     ...iconButtonStyle,
     color: '#ef4444',
 };
+
+// ⭐ NEW STYLE HELPER: Maps promotion type to color scheme
+const getPromotionTagStyles = (type: string) => {
+    switch (type) {
+        case 'Flash Deals':
+            return { backgroundColor: '#ef4444', color: '#ffffff' }; // Red
+        case 'Top Sellers':
+            return { backgroundColor: '#f59e0b', color: '#1f2937' }; // Amber/Orange
+        case 'Featured':
+            return { backgroundColor: '#10b981', color: '#ffffff' }; // Green
+        case 'New Arrival':
+            return { backgroundColor: '#3b82f6', color: '#ffffff' }; // Blue
+        case 'Clearance':
+            return { backgroundColor: '#6b7280', color: '#ffffff' }; // Gray
+        default:
+            return { backgroundColor: 'transparent', color: 'transparent' };
+    }
+}
+
+// ⭐ NEW STYLE: For the promotion tag
+const promotionTagStyle = (type: string): React.CSSProperties => ({
+    position: 'absolute',
+    top: '0.75rem',
+    right: '0.75rem',
+    padding: '0.3rem 0.6rem',
+    borderRadius: '0.5rem',
+    fontSize: '0.75rem',
+    fontWeight: '700',
+    zIndex: 10,
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    // Apply type-specific colors
+    ...getPromotionTagStyles(type),
+});
