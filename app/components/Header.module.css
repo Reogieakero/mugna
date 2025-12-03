@@ -21,7 +21,7 @@
 .logo a {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #a0c3ff; /* A bright, distinct color */
+  color: white; /* A bright, distinct color */
   text-decoration: none; /* Remove underline */
   transition: color 0.2s;
 }
@@ -53,7 +53,7 @@
 /* Underline effect on hover */
 .main-nav a:hover,
 .main-nav a.active {
-  color: #a0c3ff;
+  color: white;
 }
 
 /* --- 4. User Profile and Dropdown --- */
@@ -75,7 +75,7 @@
 }
 
 .avatar-container:hover {
-  background-color: #a0c3ff;
+  background-color: white;
 }
 
 .user-avatar {
@@ -121,7 +121,7 @@
 .user-dropdown-menu a:hover,
 .user-dropdown-menu button:hover {
   background-color: #444444; /* Highlight on hover */
-  color: #a0c3ff;
+  color: white;
 }
 
 .user-dropdown-menu hr {

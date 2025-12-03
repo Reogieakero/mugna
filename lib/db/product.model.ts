@@ -12,7 +12,6 @@ export interface Product {
     // ⭐ NEW FIELDS ADDED ⭐
     promotionType: string; // E.g., 'Flash Deals', 'Top Sellers', 'None'
     discount: number;      // Percentage discount (0-100), only relevant for certain promotion types
-    // ⭐ END NEW FIELDS ⭐
 
     createdAt: Date;
     updatedAt: Date;

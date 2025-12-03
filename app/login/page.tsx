@@ -1,19 +1,66 @@
+// /app/login/LoginPage.tsx
 "use client"; 
 
 import { useState } from 'react'; 
+import { useRouter } from 'next/navigation'; // <-- Import the router
 import styles from "./LoginPage.module.css";
 import { Eye, EyeOff } from 'lucide-react'; 
-
 
 const getStaggerClass = (delay: number) => 
   `${styles.staggerIn} [animation-delay:${delay}ms]`;
 
 
 export default function LoginPage() {
+  const router = useRouter(); // <-- Initialize the router
+  
   const [showPassword, setShowPassword] = useState(false); 
-
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+  
+  // SECURE LOGIN HANDLER
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // <-- CRITICAL: PREVENTS DEFAULT HTML FORM SUBMISSION
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/login', { 
+        method: 'POST', // <-- CRITICAL: Uses POST method for security
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle server/validation errors (Invalid credentials, unverified account)
+        setError(data.error || 'Login failed. Please try again.');
+        return;
+      }
+
+      // Login successful!
+      // 1. Clear credentials (optional, but good practice)
+      setEmail('');
+      setPassword('');
+      
+      // 2. Redirect the user using the router (No credentials in the URL!)
+      const redirectPath = data.redirectTo || '/'; // Default to homepage if not specified
+      router.push(redirectPath); 
+      
+    } catch (err) {
+      console.error('Network or unexpected error:', err);
+      setError('A network error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,8 +102,10 @@ export default function LoginPage() {
             </h1>
           </div>
 
-          <form className={styles.formWrapper}>
+          <form className={styles.formWrapper} onSubmit={handleSubmit}> 
             
+            {error && <p className={styles.errorMessage}>{error}</p>}
+
             <div className={`${getStaggerClass(800)} ${styles.mb4}`}> 
               <label
                 htmlFor="email"
@@ -71,6 +120,8 @@ export default function LoginPage() {
                 required
                 className={styles.inputField}
                 placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -90,6 +141,8 @@ export default function LoginPage() {
                   required
                   className={styles.inputField}
                   placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 
                 <button
@@ -106,8 +159,9 @@ export default function LoginPage() {
             <button
               type="submit"
               className={`${styles.loginButton} ${getStaggerClass(1200)}`} 
+              disabled={loading}
             >
-              Log In
+              {loading ? 'Logging In...' : 'Log In'}
             </button>
 
             <div className={`${styles.separatorWrapper} ${getStaggerClass(1400)}`}> 
